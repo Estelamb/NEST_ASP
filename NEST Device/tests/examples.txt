@@ -1,0 +1,4 @@
+DHT22 Temperature and Humidity sensor: https://randomnerdtutorials.com/esp32-dht11-dht22-temperature-humidity-sensor-arduino-ide/
+Load cell: https://randomnerdtutorials.com/esp32-load-cell-hx711/
+RFID: https://www.youtube.com/watch?v=mZ-6WCRlwQs
+Servos: https://www.youtube.com/watch?v=tTXw5qxRL04
