@@ -115,6 +115,8 @@ void setLedColor(String color) {
 void operateDoor(String command) {
   Serial.print(command);
   Serial.println(" door");
+  command.toLowerCase();
+
   int angle_s1 = (command == "open") ? 125 : 20;
   int angle_s2 = (command == "open") ? 0 : 90;
   s1.write(angle_s1);
