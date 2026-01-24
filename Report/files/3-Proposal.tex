@@ -1,0 +1,21 @@
+\section{Proposal Description}
+
+\input{files/Overview.tex}
+
+\clearpage
+
+\input{files/Hardware.tex}
+
+\clearpage
+
+\input{files/Implementation.tex}
+
+\subsection{Project Documentation}
+
+For the next development stage, technical documentation will be structured using the \textbf{Sphinx} documentation generator. Unlike traditional tools, Sphinx allows for a highly flexible and professional layout, utilizing reStructuredText or Markdown to integrate both high-level project descriptions and technical \gls{API} details.
+
+In the upcoming \textbf{second version} of the project, the documentation process will be fully automated through a \gls{CI} workflow using a GitHub Action. This planned workflow will execute the Sphinx engine to extract structured information directly from the docstrings and comments within the source code. This ensures that every module, class, and function is documented at the point of implementation, keeping the technical manual perfectly synchronized with the evolving codebase.
+
+Once the second version is deployed, every push to the repository will trigger the GitHub Action to regenerate the \gls{HTML} files and automatically host them via GitHub Pages. This prevents discrepancies between the current firmware and its public description while removing the need for manual updates.
+
+The documentation portal is located at the following URL: \url{https://estelamb.github.io/NEST_ASP/}.

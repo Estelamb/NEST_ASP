@@ -1,145 +1,63 @@
-\section{Specifications}\todo{change}
+\section{Project Specifications}
 
-\subsection{Specifications required}
-
-\subsubsection{Hardware}
-
-The \gls{IoT} system is based on the STM32WL55JC microcontroller. Several sensors are required to monitor plant-related environmental and physical parameters. \autoref{tab:hardware_summary} summarizes the recommended hardware components, electrical interfaces, and approximate costs.
+\subsection{Hardware Requirements}
+The hardware infrastructure must support a hybrid environment where physical nodes and simulated entities interact seamlessly.
 
 \begin{table}[H]
     \centering
-    \caption{Summary of Suggested Hardware for the IoT System}
-    \label{tab:hardware_summary}
-    \begin{tabular}{p{0.25\textwidth}p{0.25\textwidth}p{0.2\textwidth}}
+    \caption{Hardware System Requirements}
+    \label{tab:hardware_requirements}
+    \begin{tabular}{p{0.25\textwidth}p{0.7\textwidth}}
         \toprule
-        \textbf{Parameter} & \textbf{Sensor / Module} & \textbf{Interface}  \\ 
+        \textbf{Requirement} & \textbf{Description} \\ 
         \midrule
-        \gls{MCU} Board & STM32WL55JC & --  \\ 
-        Status Indicator & \gls{RGB} \gls{LED} & Digital  \\ 
-        Ambient Light & HW5P-1 Phototransistor & Analog  \\ 
-        Soil Moisture & SEN-13322 & Analog  \\ 
-        Temperature / Humidity & Si7021 & \gls{I2C}  \\ 
-        Leaf Colour & TCS34725 & \gls{I2C}  \\ 
-        Accelerometer & MMA8451Q & \gls{I2C}  \\ 
-        Global Location & Adafruit \gls{GPS} & \gls{UART}  \\ 
+        Hybrid Deployment & Implementation must work with a subset of real physical elements in parallel with simulated parts. \\
+        Sensing and Actuation & The network must contain both sensors and actuators to interact with the environment. \\
+        Periodic Sensing & The system must perform periodic measurements of at least two different types. \\
+        Node Infrastructure & Network intelligence must be deployed directly in the nodes to support Edge computing. \\
+        Commanding & Network elements must be capable of receiving and executing tasks commanded from the server side. \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\begin{itemize}
-    \item ESP32 microcontroller as the central processing unit.
-    \item Integration of the DHT22 temperature and humidity sensor.
-    \item Connection and calibration of the Load Cell with the HX711 amplifier for weight measurement.
-    \item Acquisition of \gls{RFID} with the MFRC522 module.
-    \item Open and close the door via SG90-180 servomotors.
-    \item Implementation of a \gls{RGB} \gls{LED} for status indication.
-    \item Connection with ThingsBoard \gls{IoT} platform for data visualization and remote monitoring with \gls{MQTT}.
-    \item Arduino microcontroller for 5V power supply.
-    \item Arduino \gls{IDE} for prototyping and sensor testing.
-\end{itemize}
-
-\subsubsection{Software}
-
-The software stack required for the development of the IoT system is summarized in \autoref{tab:software_tools}.
+\subsection{Software Requirements}
+The software layer is defined by the engineering standards and communication protocols required for a level \gls{IoT} application.
 
 \begin{table}[H]
     \centering
-    \caption{Software Requirements}
-    \label{tab:software_tools}
-    \begin{tabular}{p{0.2\textwidth}p{0.6\textwidth}}
+    \caption{Software Specifications}
+    \label{tab:software_requirements}
+    \begin{tabular}{p{0.25\textwidth}p{0.7\textwidth}}
         \toprule
-        \textbf{Software Tool} & \textbf{Description} \\ 
+        \textbf{Category} & \textbf{Requirement / Specification} \\ 
         \midrule
-        Zephyr \acrshort{RTOS} & \gls{RTOS} for \gls{ARM} Cortex-M devices, used for all system tasks and drivers. \\ 
-        Visual Studio Code & Primary development environment with C/C++, CMake, and Cortex-Debug extensions. \\ 
-        Git / TortoiseGit / GitHub & Version control for project source code. \\ 
-        TeraTerm / PuTTY & Serial terminal emulator for debugging and mode output. \\ 
+        Development Process & Sequential Waterfall model: requirements analysis, architectural design, detailed design, implementation, and testing. \\
+        Standard Modeling & Full utilization of \gls{UML} for all design and modeling phases. \\
+        Communication Stack & Support for standard transport protocols (primarily \gls{MQTT}) and \gls{JSON} data formats. \\
+        Visualization & Custom dashboards for historical trend analysis and real-time telemetry visualization. \\
+        Software Deliverables & Mandatory submission of source code and complete documentation. \\
         \bottomrule
     \end{tabular}
 \end{table}
 
 
-\subsubsection{System Requirements}
 
-The \gls{IoT} system must measure environmental and physical parameters and operate in three modes: Test, Normal, and Advanced (optional). \autoref{tab:sensing_reqs}-\autoref{tab:mode_requirements} present the system requirements. 
-
-\begin{table}[H]
-    \centering
-    \caption{Sensing Requirements}
-    \label{tab:sensing_reqs}
-    \begin{tabular}{p{0.08\textwidth}p{0.2\textwidth}p{0.55\textwidth}}
-        \toprule
-        \textbf{ID} & \textbf{Requirement} & \textbf{Specification} \\
-        \midrule
-        SR1 & Temperature & Range: -10°C to 50°C. Resolution: 0.1°C \\ 
-        SR2 & Relative Humidity & Range: 25\%-75\% RH. Resolution: 0.1\% \\ 
-        SR3 & Ambient Light & 0-100\%. Resolution: 0.1\% \\ 
-        SR4 & Soil Moisture & 0-100\%. Resolution: 0.1\% \\ 
-        SR5 & Leaf Colour & Clear, red, green, blue values \\ 
-        SR6 & \gls{GPS} Location & Coordinates + \gls{UTC} time \\ 
-        SR7 & Acceleration & X, Y, Z axes. Formatted output \\ 
-        SR8 & Robustness & System must be stable and robust \\ 
-        SR9 & Thread Management & Tasks must be partitioned using multitasking \\ 
-        \bottomrule
-    \end{tabular}
-\end{table}
+\subsection{System Functional Requirements}
+These requirements define the intelligence, data processing capabilities, and operational logic of the \gls{NEST} ecosystem.
 
 \begin{table}[H]
     \centering
-    \caption{Operating Modes Requirements}
-    \label{tab:mode_requirements}
-    \begin{tabular}{p{0.17\textwidth}p{0.05\textwidth}p{0.6\textwidth}}
+    \caption{System Intelligence and Operational Logic}
+    \label{tab:system_functional_requirements}
+    \begin{tabular}{p{0.25\textwidth}p{0.7\textwidth}}
         \toprule
-        \textbf{Mode} & \textbf{ID} & \textbf{Description} \\
+        \textbf{Feature} & \textbf{Requirement Description} \\ 
         \midrule
-        
-        \multirow{5}{*}{Test Mode} 
-        & TM1 & Verify sensor connections and operation. \\ 
-        & TM2 & Sampling period: 2 seconds. \\ 
-        & TM3 & Send all measurements every 2 seconds via \gls{USB} virtual \gls{COM}. \\ 
-        & TM4 & \gls{RGB} \gls{LED} indicates dominant leaf colour. \\ 
-        & TM5 & Blue \gls{LED} (\gls{LED}1) must remain ON. \\ 
-        \midrule
-
-        \multirow{7}{*}{Normal Mode}
-        & NM1 & Sampling period: 30 seconds. \\ 
-        & NM2 & Send all measurements every 30 seconds. \\ 
-        & NM3 & Compute hourly mean, max, min for temperature, humidity, light, moisture. \\ 
-        & NM4 & Compute hourly dominant colour (frequency-based). \\ 
-        & NM5 & Compute hourly max and min accelerometer values. \\ 
-        & NM6 & Send \gls{GPS} location + local time every 30 seconds. \\ 
-        & NM7 & Color-coded \gls{RGB} alert when limits exceeded. \\ 
-        & NM8 & Green \gls{LED} (\gls{LED}2) must remain ON. \\ 
-        \midrule
-        
-        \multirow{2}{*}{\makecell[l]{Advanced Mode \\ (Optional)}}
-        & AM1 & Requirements provided during validation stage. \\ 
-        & AM2 & Red \gls{LED} (\gls{LED}3) must remain ON. \\ 
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-
-\subsection{Additional specifications implemented}
-
-In addition to the mandatory requirements defined in the project specifications, several extended functionalities and robustness mechanisms were implemented to improve system reliability, diagnostic capability, maintainability, and user feedback. These additional specifications are summarized in \autoref{tab:additional_specs}.
-
-\begin{table}[H]
-    \centering
-    \caption{Additional Specifications Implemented}
-    \label{tab:additional_specs}
-    \begin{tabular}{p{0.05\textwidth}p{0.17\textwidth}p{0.75\textwidth}}
-        \toprule
-        \textbf{ID} & \textbf{Additional Requirement} & \textbf{Description} \\ 
-        \midrule
-        AS1 & \textbf{Sensor configuration} & All sensors are configured during system initialization, including adjustable internal parameters such as the colour sensor gain and integration time. \\ 
-        AS2 & \textbf{Fail-safe initialization} & If any sensor fails to initialize correctly, the entire application halts execution and enters a safe error state. \\ 
-        AS3 & \textbf{Sensor reconnection} & If a sensor becomes disconnected, a fault condition is reported. If the sensor is later reconnected, the system automatically reinitializes it and resumes normal measurement without requiring a reset. \\ 
-        AS4 & \textbf{Alarm sequencing} & When operating in NORMAL mode, all active alarms are cycled through sequentially using the \gls{RGB} \gls{LED}, with a display cadence of \textbf{0.5 seconds per alarm}. \\ 
-        AS5 & \textbf{Advanced Mode behaviour} & In ADVANCED mode, the system extends the behaviour of the NORMAL mode by reproducing on the \gls{RGB} \gls{LED} the exact colour intensity measured by the TCS34725 sensor. Since the existing \gls{LED} pins cannot be modified, \gls{PWM} operation is emulated in software to match \gls{LED} brightness with the \gls{RGB} sensor readings proportionally. All remaining system behaviour matches NORMAL mode. \\ 
-        AS6 & \textbf{Stack usage measurement} & The system includes automatic instrumentation to evaluate thread stack consumption at runtime. \\ 
-        AS7 & \textbf{Verification tools} & External analysis tools were used to inspect the system. \\ 
-        AS8 & \textbf{Documentation} & All modules, drivers, data-processing routines, and operating modes are fully documented. \\ 
+        Distributed Intelligence & Autonomous decision-making must be processed locally at the Edge node. \\ 
+        Knowledge Extraction & Actionable knowledge must be extracted from raw information obtained within the \gls{IoT} network. \\ 
+        Data Fusion & The network must perform information fusion and aggregation at the Edge level. \\ 
+        Event Handling & Verification of non-periodical alarm triggers and periodic measurement cycles through testing. \\ 
+        Remote Control & Capability to manually override status and set parameters via remote requests from the server side. \\ 
         \bottomrule
     \end{tabular}
 \end{table}

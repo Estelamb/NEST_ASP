@@ -1,29 +1,28 @@
 \section{Overview and Introduction}
 
-\subsection{Document Overview}\todo{hacer}
+\subsection{Document Overview}
+This document provides a comprehensive technical description of the \gls{NEST} project, developed as part of the Master of Science in Internet of Things. It covers the complete development lifecycle, starting from the identification of stakeholder requirements and system design using \gls{UML} modeling to the final implementation and validation results. 
 
+The report is structured to detail the hardware and software architectures, specifically focusing on the data fusion processes at the Edge level and the integration with \gls{IoT} service platforms like ThingsBoard. Additionally, it includes the work organization and effort estimation, providing a transparent view of the engineering processes applied to solve real-world challenges in smart farming.
 
 \subsection{Project Description}
+\gls{NEST} is an intelligent \gls{IoT} solution designed for the automated management of poultry farms, with a specialized focus on egg quality monitoring and protection. The system utilizes a distributed architecture where intelligence is not centralized in the cloud, but deployed directly in the nodes to ensure low-latency responses and local autonomy.
 
+By measuring environmental variables such as temperature and humidity periodically, the system ensures optimal conditions for incubation. Furthermore, the system implements complex logic to detect the concurrent presence of hens and eggs. This allows for the automation of physical security through nesting box closures and restricted access control via \gls{RFID}, ensuring that production remains protected from external threats or predators until the farmer collects them.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/System_architecture.png}
-    \caption{Architecture of the System}
-    \label{fig:system_architecture}
-\end{figure}
+The primary objective is to implement a fully functional \gls{IoT} ecosystem satisfying these technical milestones:
+\begin{itemize}
+    \item \textbf{Autonomous Edge Decision-making:} Implementation of local procedures to trigger actuators (e.g., closing doors) without requiring a constant connection to the server.
+    \item \textbf{Knowledge Extraction:} Transforming raw telemetry data from load cells and sensors into high-level actionable insights regarding the safety status of the farm.
+    \item \textbf{Hybrid World Integration:} Achieving a seamless parallel operation where real physical ESP32 nodes work together with simulated nodes to form a unified network.
+    \item \textbf{Remote Commanding:} Enabling the server-side infrastructure to send specific tasks or parameter updates to the network elements via standard protocols.
+\end{itemize}
 
-\subsection{Requirements Analysis}
-
-
-\subsubsection{Hardware Integration}
-
-
-
-\subsubsection{Software Development}
-
-
-
-\subsubsection{System Testing and Validation}
-
-
+\subsection{Methodology}
+The development of \gls{NEST} follows a \textbf{Waterfall software engineering approach}, ensuring a disciplined and sequential flow through the following stages:
+\begin{enumerate}
+    \item \textbf{Requirements Analysis:} Identification of mandatory system constraints, including sensing types, actuation needs, and distributed intelligence requirements.
+    \item \textbf{System Design:} Translation of requirements into technical blueprints. This includes architectural design (subsystems) and detailed design using \gls{UML} diagrams to model the interaction between the physical and simulated worlds.
+    \item \textbf{Implementation:} Development of the firmware for the Edge nodes and configuration of the \gls{IoT} service platforms using \gls{MQTT} and \gls{JSON} for data exchange.
+    \item \textbf{Testing and Validation:} Systematic verification of the system logic through test benches. \gls{UML} are used to model and validate the system's response to both periodic data flows and non-periodical alarm events.
+\end{enumerate}

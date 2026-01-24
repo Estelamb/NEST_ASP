@@ -1,0 +1,168 @@
+\subsection{Implementation and Development}
+
+\todo{introducción}
+
+\subsubsection{NEST Device}
+
+The firmware for the \gls{NEST} device has been developed using the \textbf{Arduino \gls{IDE}} framework. The software architecture leverages the \textbf{FreeRTOS} kernel integrated into the ESP32 core to implement a multitasking environment that ensures the system meets the real-time requirements of a smart farm.
+
+To prevent race conditions when multiple tasks access the same hardware resources, the system implements \textbf{Semaphores (Mutexes)}. This is particularly critical for the \gls{SPI} bus, which is shared by the \gls{RFID} reader, and the \gls{MQTT} client used by both telemetry and attributes changes.
+
+The system executes two main concurrent tasks to ensure efficient resource management:
+\begin{itemize}
+    \item \textbf{Telemetry Task:} Handles the periodic measurement of temperature, humidity, weight, and \gls{UID}. It transmits this data to the ThingsBoard platform every 10 seconds (configurable via remote attribute).
+    \item \textbf{\gls{RFID} Task:} Operates asynchronously with a high sampling rate (250ms) to provide instant detection. This task allows for "Instant Publish" events, sending the identified farmer's \gls{UID} immediately upon detection without waiting for the telemetry cycle to be able to open the door.
+\end{itemize}
+
+The device implements a secure communication stack using \textbf{\gls{MQTT} over \gls{TLS} (Port 8883)} to interact with the ThingsBoard platform. This connection supports bidirectional traffic through a subscription to \textbf{Shared Attributes}, enabling "Commanding" from the server side as specified in the project requirements. 
+
+The firmware utilizes the \texttt{mqttCallback} function to receive attributes updates. The integration of the \textbf{ArduinoJson} library is fundamental to this process, as it facilitates the parsing of complex \gls{JSON} payloads received from the server and the construction of structured telemetry messages for transmission.
+
+The development of the \gls{NEST} device firmware relies on several specialized libraries to interface with the hardware components and manage data serialization.
+\todo{comprobar}
+\begin{table}[H]
+    \centering
+    \caption{External Libraries and Authorship}
+    \label{tab:libraries}
+    \begin{tabular}{p{0.17\textwidth}p{0.4\textwidth}p{0.2\textwidth}}
+        \toprule
+        \textbf{Library} & \textbf{Function} & \textbf{Author/Maintainer} \\ 
+        \midrule
+        WiFi.h and WiFiClientSecure & Wireless connectivity and \gls{TLS} encryption & Espressif Systems \\ 
+        PubSubClient & \gls{MQTT} protocol implementation & Nick O'Leary \\ 
+        ArduinoJson & \gls{JSON} serialization for telemetry & Benoit Blanchon \\ 
+        ESP32Servo & \gls{PWM} control for SG90 motors & Kevin Harrington \\ 
+        MFRC522 & \gls{RFID} reader interfacing & Github Community \\ 
+        HX711 & Load cell data acquisition & Bogdan Necula \\ 
+        DHT Sensor & Temp and Hum monitoring & Adafruit Industries \\ 
+        SPI.h & \gls{SPI} Bus management & Arduino / Espressif \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{NEST Simulation}
+
+To fulfill the requirement of a hybrid deployment where real and simulated worlds work together, a Python-based simulation environment has been developed. This tool allows the execution of multiple virtual nodes in parallel with the physical hardware, enabling scalability testing and verification of the system's logic across a larger network.
+
+The simulation is built using the \texttt{paho-mqtt} library, which establishes a secure connection to the ThingsBoard platform via \textbf{\gls{MQTT} over \gls{TLS} (Port 8883)}. Each simulated instance runs a \gls{FSM} that replicates the life cycle of a nesting box and all its funtionalities. The defined states are:
+\begin{itemize}
+    \item \texttt{WAITING\_FOR\_HEN}: The default idle state with zero weight and no identified \gls{UID}.
+    \item \texttt{HEN\_INSIDE}: Simulates a hen's presence by generating a random weight (2000g-3500g) and assigning a specific \gls{UID}.
+    \item \texttt{EGGS\_DEPOSITED}: Represents the state where the hen has left (\gls{UID}: None), but the weight of the deposited eggs remains.
+    \item \texttt{PERSON\_COLLECTING}: Simulates an authorized user collecting the production, identified by a unique \gls{UID}.
+\end{itemize}
+
+To evaluate the platform's performance with multiple devices, the system includes an automated deployment workflow. This consists of a \texttt{tokens.txt} provisioning file and a batch script (\texttt{run\_all.bat}) that launches multiple simulation instances simultaneously, each with its unique credentials and virtual identity.
+
+\begin{table}[H]
+    \centering
+    \caption{Simulation Environment Components}
+    \label{tab:sim_environment}
+    \begin{tabular}{p{0.15\textwidth}p{0.8\textwidth}}
+        \toprule
+        \textbf{Component} & \textbf{Function} \\ 
+        \midrule
+        \texttt{nest\_sim.py} & Core script managing \gls{FSM} logic, sensors simulation, and secure \gls{MQTT} connectivity. \\ 
+        \texttt{tokens.txt} & Provisioning list linking ThingsBoard devices access tokens with device names. \\ 
+        \texttt{run\_all.bat} & Automation script for parallel execution of multiple virtual nodes. \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{ThingsBoard}
+
+The centralized management of the \gls{NEST} ecosystem is performed through the ThingsBoard \gls{IoT} platform. This service acts as the core for data ingestion, device management, data visualization, and remote commanding.
+
+\vspace{+10pt}
+\textbf{Device Management}
+
+To ensure a standardized configuration across the network, a specific \textbf{Device Profile} named \texttt{\gls{NEST} Device} has been created. This profile defines the common behavior, transport configurations, and alarm rules for all nodes in the coop. Currently, four operational devices have been provisioned under this profile:
+\begin{itemize}
+    \item \textbf{\gls{NEST} 1:} The primary physical node based on the ESP32 hardware.
+    \item \textbf{\gls{NEST} 2, \gls{NEST} 3, and \gls{NEST} 4:} Simulated nodes running the Python-based \gls{FSM} to test hybrid deployment and scalability.
+\end{itemize}
+
+The platform utilizes \textbf{Shared Attributes} to maintain the digital twin of each device and enable remote commanding. These attributes are stored on the server and synchronized with the devices via \gls{MQTT}. As shown in \autoref{fig:shared_attributes}, the following key attributes are managed:
+\begin{itemize}
+    \item \texttt{door}: Controls the physical state of the nesting box (\textit{open} or \textit{closed}).
+    \item \texttt{rgb}: Sets the color of the \gls{RGB} \gls{LED} (\textit{Red, Green, Blue}).
+    \item \texttt{period}: Defines the telemetry transmission interval in milliseconds.
+    \item \texttt{location}: Static geographic coordinates (\texttt{latitude} and \texttt{longitude}) for asset tracking.
+    \item \texttt{nest\_id}: A unique identifier for the specific physical location within the farm.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/shared_attributes.png} 
+    \caption{ThingsBoard Shared Attributes configuration for \acrshort{NEST} devices}
+    \label{fig:shared_attributes}
+\end{figure}
+
+The system performs continuous data ingestion from both physical and simulated sources. The telemetry stream provides real-time visibility into the farm's conditions. Each device pushes a \gls{JSON} payload containing:
+\begin{itemize}
+    \item \textbf{Environmental Data:} \texttt{temperature} and \texttt{humidity} levels.
+    \item \textbf{Production Data:} \texttt{weight} readings from the load cells to detect egg presence.
+    \item \textbf{Identification Data:} The \texttt{\gls{UID}} from the \gls{RFID} reader to identify the hen or authorized personnel currently at the nest.
+\end{itemize}
+
+\todo{cambiar foto}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/telemetry_data.png}
+    \caption{Real-time telemetry data}
+    \label{fig:telemetry_stream}
+\end{figure}
+
+\vspace{+10pt}
+\textbf{Rule Chain}
+
+\todo{rule chain}
+
+
+
+
+\vspace{+10pt}
+\textbf{Dashboard}
+
+The visualization layer is implemented through a multi-state interactive dashboard designed to provide both a global overview of the farm and detailed insights into individual nodes.
+
+The primary dashboard state (see \autoref{fig:main_dashboard}) is designed for high-level monitoring. It integrates three main functional areas:
+\begin{itemize}
+    \item \textbf{Geographic Map:} Utilizing the \textit{OpenStreet Map} widget, all four devices (\gls{NEST} 1-4) are geolocated based on their \texttt{latitude} and \texttt{longitude} attributes. The markers provide a quick visual reference of the sensors' physical distribution.
+    \item \textbf{Entities Summary Table:} A real-time grid displaying the current \texttt{temperature}, \texttt{humidity}, \texttt{weight}, and \texttt{door status} for all devices in the network.
+    \item \textbf{Global Alarms Feed:} A centralized list showing active alarms across the entire ecosystem.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/main.png} 
+    \caption{Main Dashboard View}
+    \label{fig:main_dashboard}
+\end{figure}
+
+To enable drill-down capabilities, the dashboard implements a \textbf{state-based navigation} logic. By clicking on a specific device name in the table or its marker on the map, the dashboard transitions to a "Details" state (see \autoref{fig:details_view}). 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{images/click.png} 
+    \caption{Marker Information Popup}
+    \label{fig:marker}
+\end{figure}
+
+
+This view focuses exclusively on the telemetry of the selected node:
+\begin{itemize}
+    \item \textbf{Indicator Cards:} Large, high-visibility widgets displaying the latest values for \texttt{Temperature}, \texttt{Humidity}, \texttt{Weight}, and current \texttt{Door} status.
+    \item \textbf{Historical Trend Analysis:} A time-series line chart that allows the farmer to visualize the evolution of environmental variables and weight over time, which is essential for identifying patterns in egg-laying behavior.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/details.png}
+    \caption{\acrshort{NEST} Details Dashboard View}
+    \label{fig:details_view}
+\end{figure}
+
+\subsubsection{Telegram}
+
+\todo{Telegram}
