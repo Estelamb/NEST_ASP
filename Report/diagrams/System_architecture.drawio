@@ -1,0 +1,49 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1">
+  <diagram name="Página-1" id="dFSPbk3zK70E4QVQ1OXg">
+    <mxGraphModel dx="1050" dy="669" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-10" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="270" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-7" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://t4.ftcdn.net/jpg/07/99/88/11/360_F_799881172_zLI47hp9cdSYYo9E33kqlVw8grPUbuyw.jpg;imageBorder=default;" vertex="1" parent="1">
+          <mxGeometry x="130" y="290" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-2" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://t4.ftcdn.net/jpg/07/99/88/11/360_F_799881172_zLI47hp9cdSYYo9E33kqlVw8grPUbuyw.jpg;imageBorder=default;" vertex="1" parent="1">
+          <mxGeometry x="120" y="280" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-8" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="8HZI52rNfEt_J_vIQmzT-10" target="8HZI52rNfEt_J_vIQmzT-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="300" as="sourcePoint" />
+            <mxPoint x="210" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-9" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://images.g2crowd.com/uploads/product/image/d97e82cbfad4621f5dab1995eec0c65e/thingsboard.jpg;imageBorder=default;" vertex="1" parent="1">
+          <mxGeometry x="260" y="270" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-11" value="MQTT" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="190" y="280" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-12" value="NESTs" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="115" y="340" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-13" value="Farmer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="437.68" y="275" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-14" value="" style="sketch=0;verticalLabelPosition=bottom;sketch=0;aspect=fixed;html=1;verticalAlign=top;strokeColor=none;fillColor=#000000;align=center;outlineConnect=0;pointerEvents=1;shape=mxgraph.citrix2.mobile;" vertex="1" parent="1">
+          <mxGeometry x="410" y="287.5" width="17.68" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-15" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="8HZI52rNfEt_J_vIQmzT-9" target="8HZI52rNfEt_J_vIQmzT-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="410" as="sourcePoint" />
+            <mxPoint x="410" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8HZI52rNfEt_J_vIQmzT-16" value="MQTT" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="340" y="280" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -19,11 +19,11 @@ In addition, three \gls{GPIO} pins are configured as digital outputs to drive th
 
 \subsection{Interfaces of the system}
 
-\autoref{tab:system_connections} details all electrical interfaces used in the system. Each sensor or module is mapped to the corresponding ESP32 DevKit V1 pins, specifying power connections, communication buses, and signal types. The design integrates a mix of digital and analog interfaces, including \gls{SPI} for the \gls{RFID} reader, a 2-wire serial interface for the \gls{HX711} load cell amplifier, and a single-bus protocol for the \gls{DHT22} sensor. Additionally, \gls{PWM} signals are used for servo motor control, and \gls{GPIO} pins drive the status \gls{RGB} \gls{LED} to indicate door states.
+
 
 \begin{table}[H]
     \centering
-    \caption{System Connections (ESP32)}
+    \caption{System Connections}
     \label{tab:system_connections}
     \footnotesize
     \begin{tabular}{p{0.18\textwidth}p{0.18\textwidth}p{0.15\textwidth}p{0.12\textwidth}p{0.25\textwidth}}
@@ -81,12 +81,12 @@ The system includes a common-anode \gls{RGB} \gls{LED} used to provide visual fe
 
 Each \gls{LED} channel is connected in series with a 470 Ohm resistor to ensure proper current limiting and protect both the \gls{LED} and the microcontroller outputs. This simple circuit allows the system to display a wide range of colors, enabling intuitive status indication, such as alerts or measurement feedback.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{images/rgb_circuit.png}
-    \caption{RGB LED circuit diagram}
-    \label{fig:rgb_circuit}
-\end{figure}
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.3\textwidth]{images/rgb_circuit.png}
+%    \caption{RGB LED circuit diagram}
+%    \label{fig:rgb_circuit}
+%\end{figure}
 
 \subsubsection{Si7021 Temperature and Humidity Sensor}\todo{change}
 

@@ -8,11 +8,9 @@ Servo s2;
 
 // --- AJUSTE PARA 3.3V ---
 // A 3.3V el servo es más lento. 
-// He subido el tiempo a 280ms como punto de partida.
-int moveTime = 280; 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
@@ -29,26 +27,25 @@ void setup() {
 
 void openDoor() {
   Serial.println("Abriendo a 3.3V...");
-  s1.attach(SERVO_1_PIN, 500, 2400); 
-  s1.write(0);   
-  s2.write(180); 
-  delay(moveTime); // Si no llega a 90°, aumenta este valor (ej. 320)
-  s1.detach();
+  s1.write(20); 
+  delay(2000);
+  s2.write(90);
+
 }
 
 void closeDoor() {
   Serial.println("Cerrando a 3.3V...");
-  s1.attach(SERVO_1_PIN, 500, 2400); 
-  s1.write(180); 
-  s2.write(0);   
-  delay(moveTime); 
-  s1.detach();
+  s1.write(125);
+  delay(500);
+  s2.write(0); 
+  
+
 }
 
 
 void loop() {
   openDoor();
-  delay(3000);
+  delay(2000);
   closeDoor();
-  delay(3000);
+  delay(2000);
 }
