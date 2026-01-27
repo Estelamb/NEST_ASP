@@ -1,7 +1,16 @@
 \section{Conclusions and Future Works}
 
 \subsection{Conclusions}
+The NEST project has successfully demonstrated the implementation of a comprehensive IoT ecosystem for the automated management of hen farms. By adopting a hybrid deployment strategy, the system effectively bridges the gap between the physical and virtual worlds, allowing real ESP32 nodes to operate in parallel with simulated entities.
+This architecture not only fulfills the project's scalability requirements, but also ensures a unified network capable of handling diverse data streams from various sensing and actuation layers.
 
+A central achievement of the project is the successful deployment of autonomous Edge decision-making. By utilizing the FreeRTOS kernel on the ESP32 and implementing local operational logic, the system can trigger actuators, like the servomotors for the doors, without constant server connection.
+This decentralized intelligence ensures low latency and local autonomy vital for egg production.
+
+Furthermore, the integration with ThingsBoard provides provides a robust infrastructure for data ingestion and remote commanding. Through the use of MQTT protocols and Shared Attributes, the system maintains a digital twin of each device, allowing for both historical trend analysis and real-time visualization via dashboards. This project has effectively transformed raw telemetry data into actionable insights.
 
 \subsection{Future Work}
-
+\begin{enumerate}
+    \item\textbf{RGB logic}: use the RGB implemented in the hardware to physically represent information from the network.
+    \item\textbf{Telegram bot}: develope an automated telegram bot that allows the user to modify the devices' attributes to set the ranges of the telemetry. It will also allow to gather latest telemetry from the devices.
+\end{enumerate}
