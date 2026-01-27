@@ -105,7 +105,6 @@ The system performs continuous data ingestion from both physical and simulated s
     \item \textbf{Identification Data:} The \texttt{\gls{UID}} from the \gls{RFID} reader to identify the hen or authorized personnel currently at the nest.
 \end{itemize}
 
-\todo{cambiar foto}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/telemetry_data.png}
@@ -113,11 +112,23 @@ The system performs continuous data ingestion from both physical and simulated s
     \label{fig:telemetry_stream}
 \end{figure}
 
-\vspace{+10pt}
+\clearpage
 \textbf{Rule Chain}
 
-\todo{rule chain}
+The main characteristic of ThingsBoard are their \textbf{Rule chains}, which when an input is detected execute a series of actions determinated by its nodes and the configuration.
+For this project, a specific \textbf{Rule Chains} has been developed named \texttt{NEST Device}, which can be seen below (\autoref{fig:rule_chain}).
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/rule_chain.png}
+    \caption{Real-time telemetry data}
+    \label{fig:rule_chain}
+\end{figure}
+
+When messages arrive, the rule chain filters for \textit{Post telemetry} messages and checks for the expected fields, and saves the data in the device's latest telemetry. If none of the fields are present an alarm is created to inform of a problem.
+Then the message is enriched in different ways with the device's shared attributes that define the ranges of the telemetry values. First, temperature and humidity are checked to be in the accepted range, if not another alarm is created.
+
+The weight, if it is above a minimun threshold it checks how many eggs are expected base on the averge weight. If there are eggs and no UID is detected, it sets the door attribute to "closed" and the sets the expected amount of eggs. If a valid UID is detected, meanwhile the door is closed, it sets the attribute to "open".
 
 
 
@@ -162,7 +173,3 @@ This view focuses exclusively on the telemetry of the selected node:
     \caption{\acrshort{NEST} Details Dashboard View}
     \label{fig:details_view}
 \end{figure}
-
-\subsubsection{Telegram}
-
-\todo{Telegram}
