@@ -1,5 +1,101 @@
 \subsection{System Overview}
 
+The \gls{NEST} system is designed as an end-to-end \gls{IoT} solution that bridges the gap between physical farm management and digital monitoring. It leverages Edge Computing to provide real-time responses while maintaining a robust cloud presence for data analytics and remote management.
+
 \subsubsection{System Architecture}
 
-\subsubsection{System Workflow}
+The \gls{NEST} system architecture is designed as a modular, end-to-end \gls{IoT} ecosystem that facilitates hybrid deployment, integrating physical hardware with virtual simulation environments. As illustrated in \autoref{fig:system_architecture}, the architecture is structured into three main layers: the \gls{NEST} Devices, the Edge Platform, and the User Interaction Layer.
+
+The foundation of the system consists of a hybrid network of nodes:
+\begin{itemize}
+    \item \textbf{Physical \gls{NEST} Device}: Based on an ESP32 microcontroller, it integrates sensors for temperature, humidity, and weight, alongside actuators such as an intelligent lock (\gls{RFID}), \gls{LED} indicators, and automatic doors (Servomotors).
+    \item \textbf{Simulation Environment}: A Python-based software layer that replicates the behavior of multiple \gls{NEST} nodes, allowing for system scalability testing and validation without the need for additional physical hardware.
+\end{itemize}
+
+At the core of the system, the \textbf{ThingsBoard} platform acts as the primary service orchestrator. Communication is established via the \textbf{\gls{MQTT} protocol over port 8883} for secure data exchange. The platform is responsible for:
+\begin{itemize}
+    \item \textbf{Data Aggregation and Storage}: Collecting raw telemetry in a dedicated database for historical analysis.
+    \item \textbf{Rule Engine}: Processing incoming data to extract high-level knowledge and trigger automated actions or alarms based on predefined thresholds.
+    \item \textbf{Digital Twin Management}: Handling \textbf{Shared Attributes} to synchronize the physical state of the nodes with their cloud representation, enabling remote commanding and parameter updates.
+\end{itemize}
+
+The final layer provides the farmer with actionable insights through two main channels:
+\begin{itemize}
+    \item \textbf{Interactive Dashboard}: A multi-state web interface for real-time monitoring of environmental conditions and production status.
+    \item \textbf{Telegram Integration}: An external notification service that sends critical alarms directly to the user's mobile device via \gls{REST} \gls{API}, ensuring immediate awareness of any system anomalies.
+\end{itemize}
+
+The architecture is designed to transform raw sensor data into actionable knowledge. This process starts at the \textbf{\gls{NEST}}, where the ESP32 performs sensors measurements. The integration between the physical world and the digital twin is mediated by a robust \textbf{Communication Stack}, sending those measurements to the \textbf{Edge platform} for processing. 
+
+The use of \textbf{\gls{MQTT}} as the primary transport protocol allows the system to maintain a persistent, bidirectional connection with the ThingsBoard broker. This hybrid approach not only supports the current physical setup but also provides a scalable framework where hundreds of simulated nodes can be provisioned through the \texttt{run\_all.bat} workflow, allowing for stress-testing of the platform's ingestion capabilities.
+
+Beyond telemetry collection, the architecture emphasizes \textbf{Remote Commanding}. Through the use of \textbf{Shared Attributes}, the \textbf{Edge platform} acts as a centralized brain that can override local states or update operational parameters (such as the \texttt{telemetry\_interval}) across the entire network. This bidirectional flow ensures that the farmer maintains full control through the interactive dashboard, while the \textbf{Rule Engine} automates complex scenarios, such as notifying the user via Telegram when specific production thresholds are reached.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.75\linewidth, angle=270]{images/System_architecture.png}
+    \caption{\acrshort{NEST} System Architecture}
+    \label{fig:system_architecture}
+\end{figure}
+
+
+\subsubsection{Use Case Diagram}
+The primary interactions with the system involve the authorized personnel (farmer) and the biological entities (hens), as depicted in \autoref{fig:usecase}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/usecase.png}
+    \caption{\acrshort{NEST} System Use Case Diagram}
+    \label{fig:usecase}
+\end{figure}
+
+\subsubsection{Component Diagram}
+The architecture follows a modular approach where the \gls{NEST} device acts as an intelligent gateway, and ThingsBoard serves as the integration broker.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/component.png}
+    \caption{Component Diagram of the \acrshort{NEST} Ecosystem}
+    \label{fig:component}
+\end{figure}
+
+\subsubsection{Deployment Diagram}
+The physical deployment illustrates the hybrid nature of the project, including the physical ESP32 node and the simulated Python environments.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/deployment.png}
+    \caption{Deployment Diagram of the \acrshort{NEST} System}
+    \label{fig:deployment}
+\end{figure}
+
+\subsection{System Workflow}
+
+The \gls{NEST} system operates through a highly coordinated exchange of messages between the physical environment and the digital twin. This process ensures that every biological event—such as a hen entering the nest or an egg being laid—is recorded, analyzed, and acted upon in real-time.
+
+As detailed in \autoref{fig:nest_workflow}, the workflow begins at the \textbf{\gls{NEST} Device}. The ESP32 manages two concurrent execution threads using \textbf{FreeRTOS}. The \texttt{taskRFID} maintains a high sampling rate (250ms) to ensure an "Instant Publish" event as soon as a tag is detected. 
+
+Simultaneously, the \texttt{taskTelemetry} performs \textbf{Data Fusion} by gathering environmental readings and weight data, encapsulating them into a structured \gls{JSON} payload every period (10s by default). To prevent hardware conflicts during these overlapping operations, \textbf{Semaphores} act as traffic controllers for the \gls{SPI} bus and the \gls{MQTT} client.
+
+Once the telemetry reaches the \textbf{ThingsBoard} platform, the workflow transitions to the \textbf{Rule Engine} logic depicted in \autoref{fig:tb_workflow}. The platform does not merely store data, it evaluates it against business logic:
+\begin{itemize}
+    \item \textbf{Identity Validation}: The system distinguishes between a hen (triggering monitoring mode) and a staff member (triggering collection mode).
+    \item \textbf{Autonomous Actuation}: If the sensors detect a weight increase consistent with an egg but the \gls{UID} indicates the hen has left, the platform pushes a \textbf{Shared Attribute} update.
+    \item \textbf{Remote Sync}: This attribute update is received by the ESP32's \texttt{mqttCallback}, which immediately triggers the servos to close the nest door, protecting the production until a person identifies themselves to collect it.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/nest_workflow.png}
+    \caption{\acrshort{NEST} Device Workflow Sequence Diagram}
+    \label{fig:nest_workflow}
+\end{figure}
+
+%\todo{hacer workflow thingsboard}
+%
+%\begin{figure}[H]
+%    \centering
+%    %\includegraphics[width=1\textwidth]{images/tb_workflow.png}
+%    \caption{ThingsBoard Workflow Sequence Diagram}
+%    \label{fig:tb_workflow}
+%\end{figure}

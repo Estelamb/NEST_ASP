@@ -10,7 +10,14 @@ This decentralized intelligence ensures low latency and local autonomy vital for
 Furthermore, the integration with ThingsBoard provides provides a robust infrastructure for data ingestion and remote commanding. Through the use of MQTT protocols and Shared Attributes, the system maintains a digital twin of each device, allowing for both historical trend analysis and real-time visualization via dashboards. This project has effectively transformed raw telemetry data into actionable insights.
 
 \subsection{Future Work}
-\begin{enumerate}
-    \item\textbf{RGB logic}: use the RGB implemented in the hardware to physically represent information from the network.
-    \item\textbf{Telegram bot}: develope an automated telegram bot that allows the user to modify the devices' attributes to set the ranges of the telemetry. It will also allow to gather latest telemetry from the devices.
-\end{enumerate}
+Despite the successful implementation of the \gls{NEST} ecosystem, the system remains a scalable framework designed for continuous evolution and technical refinement. The following points outline the roadmap for integrating more sophisticated local logic, enhanced user interfaces, and advanced data processing techniques to further optimize poultry farm management.
+
+\begin{itemize}
+    \item \textbf{RGB Logic}: Utilize the integrated hardware RGB LED to provide immediate physical feedback from the network status, such as connection quality or alarm triggers.
+    
+    \item \textbf{Telegram Bot Integration}: Develop an automated Telegram bot via the REST API to allow farmers to modify device attributes, set telemetry ranges, and request real-time sensor snapshots directly from their mobile devices.
+    
+    \item \textbf{Predictive Analytics}: Leverage the historical data stored in the ThingsBoard Telemetry Database to implement machine learning models at the Edge for predicting egg-laying patterns and identifying early signs of hen illness based on environmental anomalies.
+    
+    \item \textbf{Power Optimization}: Explore deep-sleep modes for the ESP32 between periodic sensing cycles to enhance energy efficiency, which is critical for future deployments using battery or solar power in remote farm areas.
+\end{itemize}

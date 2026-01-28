@@ -1,8 +1,10 @@
 \subsection{Implementation and Development}
 
-\todo{introducción}
+This section details the technical realization of the \gls{NEST} ecosystem, integrating the firmware development, the simulation environment, and the service platform configuration. The implementation has been designed following a hybrid deployment approach, where physical and virtual devices coexist to ensure both the scalability and robustness of the poultry monitoring system.
 
-\subsubsection{NEST Device}
+To achieve a seamless integration, communication protocols and data structures have been unified, ensuring that both real hardware and simulated nodes interact identically with the central server. The following sections describe the technological pillars of this phase: the real-time system-based firmware for the physical device, the cyclic simulation engine in Python, and the data management architecture within the ThingsBoard platform.
+
+\subsubsection{\acrshort{NEST} Device}
 
 The firmware for the \gls{NEST} device has been developed using the \textbf{Arduino \gls{IDE}} framework. The software architecture leverages the \textbf{FreeRTOS} kernel integrated into the ESP32 core to implement a multitasking environment that ensures the system meets the real-time requirements of a smart farm.
 
@@ -19,28 +21,28 @@ The device implements a secure communication stack using \textbf{\gls{MQTT} over
 The firmware utilizes the \texttt{mqttCallback} function to receive attributes updates. The integration of the \textbf{ArduinoJson} library is fundamental to this process, as it facilitates the parsing of complex \gls{JSON} payloads received from the server and the construction of structured telemetry messages for transmission.
 
 The development of the \gls{NEST} device firmware relies on several specialized libraries to interface with the hardware components and manage data serialization.
-\todo{comprobar}
+
 \begin{table}[H]
     \centering
     \caption{External Libraries and Authorship}
     \label{tab:libraries}
-    \begin{tabular}{p{0.17\textwidth}p{0.4\textwidth}p{0.2\textwidth}}
+    \begin{tabular}{p{0.25\textwidth}p{0.4\textwidth}p{0.25\textwidth}}
         \toprule
         \textbf{Library} & \textbf{Function} & \textbf{Author/Maintainer} \\ 
         \midrule
-        WiFi.h and WiFiClientSecure & Wireless connectivity and \gls{TLS} encryption & Espressif Systems \\ 
-        PubSubClient & \gls{MQTT} protocol implementation & Nick O'Leary \\ 
-        ArduinoJson & \gls{JSON} serialization for telemetry & Benoit Blanchon \\ 
-        ESP32Servo & \gls{PWM} control for SG90 motors & Kevin Harrington \\ 
+        DHT Sensor Library & Temp and Hum monitoring & Adafruit \\ 
+        HX711 Arduino Library & Load cell data acquisition & Bogdan Necula, Andreas Molt \\ 
         MFRC522 & \gls{RFID} reader interfacing & Github Community \\ 
-        HX711 & Load cell data acquisition & Bogdan Necula \\ 
-        DHT Sensor & Temp and Hum monitoring & Adafruit Industries \\ 
+        ESP32Servo & \gls{PWM} control for SG90 motors & Kevin Harrington, John K. Bennett \\ 
+        PubSubClient.h & \gls{MQTT} protocol implementation & Nick O'Leary \\ 
+        WiFi.h and WiFiClientSecure.h & Wireless connectivity and \gls{TLS} encryption & Espressif Systems \\ 
         SPI.h & \gls{SPI} Bus management & Arduino / Espressif \\
+        ArduinoJson & \gls{JSON} serialization for telemetry & Benoit Blanchon \\ 
         \bottomrule
     \end{tabular}
 \end{table}
 
-\subsubsection{NEST Simulation}
+\subsubsection{\acrshort{NEST} Simulation}
 
 To fulfill the requirement of a hybrid deployment where real and simulated worlds work together, a Python-based simulation environment has been developed. This tool allows the execution of multiple virtual nodes in parallel with the physical hardware, enabling scalability testing and verification of the system's logic across a larger network.
 
@@ -93,8 +95,8 @@ The platform utilizes \textbf{Shared Attributes} to maintain the digital twin of
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/shared_attributes.png} 
-    \caption{ThingsBoard Shared Attributes configuration for \acrshort{NEST} devices}
+    \includegraphics[width=0.9\textwidth]{images/shared_attributes.png} 
+    \caption{ThingsBoard Shared Attributes Configuration}
     \label{fig:shared_attributes}
 \end{figure}
 
@@ -107,10 +109,11 @@ The system performs continuous data ingestion from both physical and simulated s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/telemetry_data.png}
-    \caption{Real-time telemetry data}
+    \includegraphics[width=0.9\textwidth]{images/telemetry_data.png}
+    \caption{Real-Time Telemetry Data}
     \label{fig:telemetry_stream}
 \end{figure}
+
 
 \clearpage
 \textbf{Rule Chain}
@@ -126,6 +129,7 @@ For this project, a specific \textbf{Rule Chains} has been developed named \text
 \end{figure}
 
 When messages arrive, the rule chain filters for \textit{Post telemetry} messages and checks for the expected fields, and saves the data in the device's latest telemetry. If none of the fields are present an alarm is created to inform of a problem.
+
 Then the message is enriched in different ways with the device's shared attributes that define the ranges of the telemetry values. First, temperature and humidity are checked to be in the accepted range, if not another alarm is created.
 
 The weight, if it is above a minimun threshold it checks how many eggs are expected base on the averge weight. If there are eggs and no UID is detected, it sets the door attribute to "closed" and the sets the expected amount of eggs. If a valid UID is detected, meanwhile the door is closed, it sets the attribute to "open".
@@ -173,3 +177,5 @@ This view focuses exclusively on the telemetry of the selected node:
     \caption{\acrshort{NEST} Details Dashboard View}
     \label{fig:details_view}
 \end{figure}
+
+%\subsubsection{Telegram}

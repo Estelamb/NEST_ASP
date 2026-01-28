@@ -27,19 +27,18 @@ void setup() {
 
 void openDoor() {
   Serial.println("Abriendo a 3.3V...");
-  s1.write(20); 
-  delay(2000);
-  s2.write(90);
 
+  s1.write(160);
+  delay(500);
+  s2.write(20);
 }
 
 void closeDoor() {
   Serial.println("Cerrando a 3.3V...");
-  s1.write(125);
-  delay(500);
-  s2.write(0); 
-  
 
+  s1.write(20); 
+  delay(500);
+  s2.write(125);
 }
 
 

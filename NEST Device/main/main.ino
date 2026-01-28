@@ -14,6 +14,7 @@ const char* password = "4hk2fbthruumfqf";
 const char* mqtt_server = "srv-iot.diatel.upm.es";
 const char* token = "hNxbPHZG1A1Rft0LHAVO";
 int telemetryInterval = 10000;
+unsigned long pauseTelemetryUntil = 0;
 
 // --- PIN DEFINITIONS ---
 #define DHTPIN 15 
@@ -32,12 +33,11 @@ const int BLUE_PIN = 27;
 #define MOSI_PIN   23
 
 #define SERVO_1_PIN 2
-#define SERVO_2_PIN 13 
 
 // --- OBJECTS ---
 DHT dht(DHTPIN, DHTTYPE);
 HX711 scale;
-Servo s1, s2;
+Servo s1;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
@@ -115,20 +115,20 @@ void setLedColor(String color) {
 void operateDoor(String command) {
   Serial.print(command);
   Serial.println(" door");
-  command.toLowerCase();
 
-  int angle_s1 = (command == "open") ? 125 : 20;
-  int angle_s2 = (command == "open") ? 0 : 90;
+  command.toLowerCase();
+  int angle_s1 = (command == "open") ? 150 : 20;
   s1.write(angle_s1);
-  delay(500); 
-  s2.write(angle_s2);
+  if(command == "open"){
+    pauseTelemetryUntil = millis() + 60000;
+  }
+
   Serial.println("[DOOR] - Movement completed");
 }
-
 // --- MQTT MANAGEMENT ---
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("[MQTT] - Message arrived: ");
+  Serial.println("[MQTT] - Message arrived");
   StaticJsonDocument<500> doc;
   if (deserializeJson(doc, payload, length)) return;
   JsonObject shared = doc.containsKey("shared") ? doc["shared"] : doc.as<JsonObject>();
@@ -145,7 +145,7 @@ void reconnectMQTT() {
       client.subscribe("v1/devices/me/attributes");
       client.publish("v1/devices/me/attributes/request/1", "{}");
     } else {
-      vTaskDelay(5000 / portTICK_PERIOD_MS);
+      vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
   }
 }
@@ -157,45 +157,50 @@ void reconnectMQTT() {
  * Sends all sensors + UID (if present). If no card is present, sends NULL.
  */
 void taskTelemetry(void * pvParameters) {
-  for(;;) {
-    String instantUid = "";
-    if (xSemaphoreTake(spiMutex, portMAX_DELAY)) {
-      instantUid = checkRFID();
-      xSemaphoreGive(spiMutex);
-    }
-
-    if (xSemaphoreTake(mqttMutex, portMAX_DELAY)) {
-      if (!client.connected()) reconnectMQTT();
-      client.loop(); 
-
-      float h = dht.readHumidity();
-      float t = dht.readTemperature();
-      float w = scale.get_units(5);
-
-      StaticJsonDocument<256> data;
-      data["temperature"] = isnan(t) ? 0 : t;
-      data["humidity"] = isnan(h) ? 0 : h;
-      data["weight"] = w;
-
-      // Telemetry logic: Check instant detection first, then buffer, else null
-      if (instantUid != "") {
-        data["uid"] = instantUid;
-      } else if (lastUid != "") {
-        data["uid"] = lastUid;
-      } else {
-        data["uid"] = "None"; 
+  for(;;) {    
+    // Check if we are currently in a pause period
+    if (millis() > pauseTelemetryUntil) {
+      
+      String instantUid = "";
+      if (xSemaphoreTake(spiMutex, portMAX_DELAY)) {
+        instantUid = checkRFID();
+        xSemaphoreGive(spiMutex);
       }
-      
-      lastUid = ""; // Reset buffer after periodic transmission
 
-      char buffer[256];
-      serializeJson(data, buffer);
-      Serial.print("[TELEMETRY] - Periodic publish: ");
-      Serial.println(buffer);
-      client.publish("v1/devices/me/telemetry", buffer);
-      
-      xSemaphoreGive(mqttMutex);
+      if (xSemaphoreTake(mqttMutex, portMAX_DELAY)) {
+        if (!client.connected()) reconnectMQTT();
+        client.loop(); 
+
+        float h = dht.readHumidity();
+        float t = dht.readTemperature();
+        float w = scale.get_units(5);
+
+        StaticJsonDocument<256> data;
+        data["temperature"] = isnan(t) ? 0 : t;
+        data["humidity"] = isnan(h) ? 0 : h;
+        data["weight"] = w;
+
+        if (instantUid != "") {
+          data["uid"] = instantUid;
+        } else if (lastUid != "") {
+          data["uid"] = lastUid;
+        } else {
+          data["uid"] = "None"; 
+        }
+        
+        lastUid = ""; 
+
+        char buffer[256];
+        serializeJson(data, buffer);
+        Serial.print("[TELEMETRY] - Periodic publish: ");
+        Serial.println(buffer);
+        client.publish("v1/devices/me/telemetry", buffer);
+        xSemaphoreGive(mqttMutex);
+      }
+    } else {
+      //Serial.println("[TELEMETRY] - Paused, skipping measurement...");
     }
+    
     vTaskDelay(telemetryInterval / portTICK_PERIOD_MS);
   }
 }
@@ -262,9 +267,7 @@ void setup() {
 
   ESP32PWM::allocateTimer(0);
   s1.setPeriodHertz(50);
-  s2.setPeriodHertz(50);
   s1.attach(SERVO_1_PIN, 500, 2400);
-  s2.attach(SERVO_2_PIN, 500, 2400);
 
   xTaskCreate(taskTelemetry, "TelemetryTask", 8192, NULL, 1, NULL);
   xTaskCreate(taskRFID, "RFIDTask", 4096, NULL, 1, NULL);

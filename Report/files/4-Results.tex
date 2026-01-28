@@ -1,1 +1,78 @@
 \section{Results}
+
+\subsection{Unitary Tests}
+
+To ensure the reliability of the NEST system, each hardware peripheral underwent a dedicated Unitary Testing phase. This process verified that both the physical wiring and the specific software drivers worked correctly before integrating them into the main FreeRTOS multitasking firmware.
+\begin{table}[H]
+    \centering
+    \caption{Hardware Unitary Testing Procedures}
+    \label{tab:unitary_tests}
+    \begin{tabular}{p{0.13\textwidth}p{0.35\textwidth}p{0.4\textwidth}}
+        \toprule
+        \textbf{Component} & \textbf{Test Objective} & \textbf{Verification Method} \\
+        \midrule
+        DHT22 & Data consistency and single-bus timing. & Measure temperature and humidity conditions.\\
+        Load Cell (HX711) & Accuracy and calibration of weight sensing. & Applied weights and verified the output in the Serial Monitor. \\
+        MFRC522 (\gls{RFID}) & Successful \gls{UID} identification and \gls{SPI} stability. & Scanned multiple tags to ensure unique hex strings were captured correctly. \\
+        SG90 Servos & Precision of movement and power stability. & Commanded \texttt{open} and \texttt{closed} door positions. \\
+        \gls{RGB} \gls{LED} & Color mixing and \gls{PWM} duty cycle validation. & Executed a test to display Red, Green, and Blue colors. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\subsection{Local Test}
+
+A \textbf{Local Test} was performed to verify the integrity of the data acquisition. As shown in \autoref{fig:local_feedback_test}, the system provides the measured values via the serial console.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/logs.png}
+    \caption{Local Feedback Test}
+    \label{fig:local_feedback_test}
+\end{figure}
+
+\subsection{ThingsBoard Test}
+
+The \textbf{ThingsBoard Test} focused on validating the connection between the \gls{NEST} Devices and the \gls{IoT} platform. As shown in \autoref{fig:tb_test}, the testing phase successfully verified the integrity of the secure \gls{MQTT} stack and the real-time synchronization of the digital twin. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/telemetry_data.png}
+    \caption{ThingsBoard Test}
+    \label{fig:tb_test}
+\end{figure}
+
+\subsection{Attributes Changes}
+
+The \textbf{Attributes Changes} test validated the system's responsiveness to remote configuration updates. As shown in \autoref{fig:attribute_change}, changes made to the device attributes on the ThingsBoard platform were successfully propagated to the \gls{NEST} Device, demonstrating effective two-way communication.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/attributes_change.png}
+    \caption{Attributes Changes}
+    \label{fig:attribute_change}
+\end{figure}
+
+%\subsection{Telegram Bot}
+
+%%\todo{test y foto}
+
+
+\subsection{System Integration Test}
+
+The final validation of the project was conducted through a comprehensive \textbf{System Integration Test}, confirming the end-to-end functionality of the data pipeline, from physical sensing to ThingsBoard data management and visualization. As shown in \autoref{fig:dashboard_test}, the \textbf{ThingsBoard Dashboard} successfully aggregates all telemetry streams into a cohesive monitoring station. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/main.png}
+    \caption{ThingsBoard Dashboard Result (1)}
+    \label{fig:dashboard_test}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/details.png}
+    \caption{ThingsBoard Dashboard Result (2)}
+    \label{fig:dashboard_test_2}
+\end{figure}
