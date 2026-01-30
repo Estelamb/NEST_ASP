@@ -99,6 +99,10 @@ def run():
         client.connect(THINGSBOARD_HOST, PORT, 60)
         client.subscribe("v1/devices/me/attributes")
         client.loop_start()
+        
+        init_payload = {"init": "started"}
+        client.publish("v1/devices/me/telemetry", json.dumps(init_payload))
+        print(f"[{name}] - Initialization message sent.")
 
         print(f"--- {name} Simulation Started ---")
 
