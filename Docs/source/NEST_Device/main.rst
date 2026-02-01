@@ -17,14 +17,14 @@ Firmware Architecture
 
 The firmware utilizes **FreeRTOS** to manage two core concurrent tasks, ensuring that high-speed events (like RFID detection) do not interfere with periodic telemetry.
 
-
-
-### Task Management
+Task Management
+^^^^^^^^^^^^^^^
 
 * **taskTelemetry (Periodic)**: Executes every 10 seconds (default). It performs data fusion from all sensors and publishes a comprehensive JSON payload to the MQTT broker.
 * **taskRFID (Async)**: Executes every 250ms. It provides "Instant Publish" capabilities, sending a telemetry update immediately upon detecting a new card to minimize latency for door operations.
 
-### Resource Synchronization
+Resource Synchronization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 To prevent race conditions and hardware conflicts, the system implements the following **Mutexes**:
 
@@ -33,8 +33,6 @@ To prevent race conditions and hardware conflicts, the system implements the fol
 
 Technical Reference
 -------------------
-
-### Core Functions
 
 .. cpp:function:: String checkRFID()
 
@@ -52,18 +50,9 @@ Technical Reference
 
    Drives two SG90 servomotors to specific angles to simulate a physical door opening or closing.
    
-   :param command: "open" to trigger the entry position, otherwise "close".
+   :param command: "open" to trigger the entry position, otherwise "closed".
 
 .. cpp:function:: void mqttCallback(char* topic, byte* payload, unsigned int length)
 
    Processes incoming JSON messages from ThingsBoard. It extracts **Shared Attributes** to remotely update the door state, LED feedback, or the telemetry reporting frequency.
 
-Implementation Source
----------------------
-
-The complete implementation of the firmware is provided below:
-
-.. literalinclude:: main_nest.ino
-   :language: cpp
-   :linenos:
-   :caption: NEST Physical Device Firmware (main_nest.ino)
