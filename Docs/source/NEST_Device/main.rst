@@ -1,5 +1,5 @@
 Main Application
 ================
 
-.. automodule:: main_nest
+.. automodule:: main_nest.ino
    :members:
