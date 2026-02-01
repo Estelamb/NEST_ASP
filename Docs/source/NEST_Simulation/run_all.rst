@@ -7,9 +7,12 @@ Provisioning File (tokens.txt)
 ------------------------------
 The tokens.txt file serves as a local database for device credentials. Each line maps a unique ThingsBoard Access Token to a Device Name.
 
-.. code-block:: text :caption: tokens.txt
+.. code-block:: text 
+   :caption: tokens.txt
 
-HUyaoCGGK6Pmu8nH3AWr,NEST_2 XAWy4XST70V5WmEHwV7h,NEST_3 kPfpX4EumVHdRR2icNjP,NEST_4
+   HUyaoCGGK6Pmu8nH3AWr,NEST_2 
+   XAWy4XST70V5WmEHwV7h,NEST_3 
+   kPfpX4EumVHdRR2icNjP,NEST_4
 
 These tokens allow the simulation to connect as NEST 2, NEST 3, and NEST 4, which are provisioned under the same NEST Device Profile as the physical hardware.
 
@@ -17,9 +20,13 @@ Execution Script (run_all.bat)
 ------------------------------
 The run_all.bat script automates the parallel execution of multiple virtual nodes. It iterates through the provisioning file and launches a separate process for each device.
 
-.. code-block:: batch :caption: run_all.bat
+.. code-block:: batch 
+   :caption: run_all.bat
 
-@echo off for /F "tokens=1,2 delims=," %%A in (tokens.txt) do ( start "%%B" cmd /k python nest_sim.py %%A %%B )
+   @echo off 
+   for /F "tokens=1,2 delims=," %%A in (tokens.txt) do ( 
+      start "%%B" cmd /k python nest_sim.py %%A %%B 
+   )
 
 Technical Workflow
 ------------------
