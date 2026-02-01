@@ -1,5 +1,7 @@
 import os
 import sys
+from sphinx.highlighting import lexers
+from pygments.lexers.c_cpp import CppLexer
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -74,6 +76,8 @@ autosummary_generate = True
 templates_path = ['_templates']
 exclude_patterns = []
 suppress_warnings = ['epub.unknown_project_files']
+
+lexers['cpp'] = CppLexer(startinline=True)
 
 
 # -- Options for HTML output -------------------------------------------------
