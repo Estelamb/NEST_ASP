@@ -1,6 +1,3 @@
-NEST Device Profile
-===================
-
 NEST Device Profile Configuration
 =================================
 
@@ -37,5 +34,3 @@ Integration with Service Platforms
 
 The profile is linked to the **NEST Rule Chain**. This ensures that as soon as telemetry is received, it is processed to determine if an automated action is required, such as notifying the user via **Telegram** when a critical alarm is created.
 
-.. literalinclude:: nest_device_profile.json
-   :language: json

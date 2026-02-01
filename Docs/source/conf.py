@@ -22,7 +22,6 @@ release = '1.0'
 sys.path.insert(0, os.path.abspath('../../NEST Device/main'))
 sys.path.insert(0, os.path.abspath('../../NEST Device/tests'))
 sys.path.insert(0, os.path.abspath('../../NEST Simulations'))
-sys.path.insert(0, os.path.abspath('../../ThingsBoard'))
 sys.path.insert(0, os.path.abspath('../../Telegram'))
 
 extensions = [

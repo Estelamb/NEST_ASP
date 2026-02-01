@@ -1,6 +1,3 @@
-NEST Rule-Chain
-===============
-
 NEST Rule Chain Logic
 =====================
 
@@ -40,7 +37,3 @@ The implementation relies on several specialized nodes:
 * **Script Nodes:** Used for parsing complex JSON data and calculating the nest status.
 * **Save Timeseries:** To store historical data for the dashboard charts.
 * **Rule Chain Transitions:** Complex branching based on "Success", "True/False", and "Failure" results to ensure robust error handling.
-
-
-.. literalinclude:: nest_rulechain.json
-   :language: json

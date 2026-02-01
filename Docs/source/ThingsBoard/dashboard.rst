@@ -35,5 +35,3 @@ The dashboard enables direct interaction with the hardware through **Shared Attr
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Through the use of **Entity Aliases** (such as "Actual NEST"), the dashboard can dynamically switch between different physical devices or simulated Python nodes, allowing the system to scale easily as more nests are added to the farm.
 
-.. literalinclude:: nest_dashboard.json
-   :language: json
