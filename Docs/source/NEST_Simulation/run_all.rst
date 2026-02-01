@@ -31,13 +31,10 @@ The run_all.bat script automates the parallel execution of multiple virtual node
 Technical Workflow
 ------------------
 
-Parsing: The script uses a for loop with a comma delimiter to extract the token (%%A) and the name (%%B).
+- Parsing: The script uses a for loop with a comma delimiter to extract the token (%%A) and the name (%%B).
 
+- Parallelism: The start command opens a new command prompt window for each instance, allowing the nodes to run concurrently.
 
-Parallelism: The start command opens a new command prompt window for each instance, allowing the nodes to run concurrently.
+- Persistence: The /k flag keeps the terminal open after the script execution, enabling the developer to monitor the local feedback and MQTT logs for each node.
 
-
-Persistence: The /k flag keeps the terminal open after the script execution, enabling the developer to monitor the local feedback and MQTT logs for each node.
-
-
-Integration: Once launched, all nodes synchronize their Shared Attributes with ThingsBoard, appearing immediately on the Geographic Map and the Entities Summary Table.
+- Integration: Once launched, all nodes synchronize their Shared Attributes with ThingsBoard, appearing immediately on the Geographic Map and the Entities Summary Table.
