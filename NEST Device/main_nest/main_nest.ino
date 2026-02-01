@@ -1,5 +1,5 @@
 /**
- * @file main.ino
+ * @file main_nest.ino
  * @brief ESP32 based IoT system for environmental monitoring, access control, and weight measurement.
  * * This system integrates MQTT (ThingsBoard), DHT22, HX711, RFID, and Servos using 
  * FreeRTOS tasks to manage concurrent sensor reading and telemetry.
