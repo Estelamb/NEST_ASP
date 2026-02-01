@@ -6,9 +6,6 @@
 Servo s1;
 Servo s2;
 
-// --- AJUSTE PARA 3.3V ---
-// A 3.3V el servo es más lento. 
-
 void setup() {
   Serial.begin(115200);
 
@@ -26,19 +23,15 @@ void setup() {
 }
 
 void openDoor() {
-  Serial.println("Abriendo a 3.3V...");
-
-  s1.write(160);
-  delay(500);
+  s1.write(150);
+  delay(250);
   s2.write(20);
 }
 
 void closeDoor() {
-  Serial.println("Cerrando a 3.3V...");
-
   s1.write(20); 
-  delay(500);
-  s2.write(125);
+  delay(250);
+  s2.write(150);
 }
 
 

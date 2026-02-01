@@ -22,7 +22,7 @@ class SmartNest:
         self.led_rgb = "off"
         
         self.state_counter = 0
-        self.target_repeats = random.randint(5, 30)
+        self.target_repeats = random.randint(5, 20)
 
     def update_logic(self):
         """Cyclic logic with door blocking and random persistence"""
@@ -35,7 +35,7 @@ class SmartNest:
             
             # BLOCKING LOGIC: If door is closed, we cannot move to HEN_INSIDE or PERSON_COLLECTING
             # (Assuming the person also needs the door open to reach the eggs)
-            if self.door_status.lower() == "closed" and next_state_idx in [1, 3]:
+            if self.door_status.lower() == "closed" and state == "WAITING_FOR_HEN":
                 return # Stay in current state, don't reset counter, don't transition
             
             # If door is open (or state doesn't require open door), transition:

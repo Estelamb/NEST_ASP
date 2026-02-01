@@ -1,0 +1,699 @@
+{
+  "ruleChain": {
+    "name": "NEST Device",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": ""
+    }
+  },
+  "metadata": {
+    "version": 19,
+    "firstNodeIndex": 1,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbCheckMessageNode",
+        "name": "Check Telemetry",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "messageNames": [
+            "temperature",
+            "humidity",
+            "weight",
+            "uid"
+          ],
+          "metadataNames": [],
+          "checkAllKeys": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 230,
+          "layoutY": 352
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbMsgTypeSwitchNode",
+        "name": "Check Message Type",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "version": 0
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 275,
+          "layoutY": 150
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Incorrect Message Syntax",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "useMessageAlarmData": false,
+          "alarmType": "incorrect message syntax",
+          "severity": "MAJOR",
+          "propagate": false,
+          "relationTypes": []
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 742,
+          "layoutY": 82
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Close Incorrect Message Syntax Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmType": "incorrect message syntax"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 737,
+          "layoutY": 165
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check Temperature",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "maxTemp = metadata.shared_maxTemp;\nminTemp = metadata.shared_minTemp;\n\nif(msg.temperature<minTemp||msg.temperature>maxTemp){\n    return true;\n}else return false;"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 743,
+          "layoutY": 354
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check Humidity",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "maxHum = metadata.shared_maxHum;\nminHum = metadata.shared_minHum;\n\nif(msg.humidity<minHum||msg.humidity>maxHum){\n    return true;\n}else return false;"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 742,
+          "layoutY": 503
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check UID",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "validUID = metadata.shared_validUID;\nhenUID = metadata.shared_henUID;\n\nif(msg.uid==validUID || msg.uid==henUID){\n    return true;\n}else return false;"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 730,
+          "layoutY": 637
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Temperature Out of Bounds Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": null,
+          "alarmType": "Temperature Out of Bounds",
+          "severity": "MAJOR",
+          "propagate": false,
+          "relationTypes": [],
+          "propagateToOwner": null,
+          "propagateToTenant": null,
+          "dynamicSeverity": null
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 988,
+          "layoutY": 319
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Close Temperature Out of Bounds Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "alarmType": "Temperature Out of Bounds"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 989,
+          "layoutY": 388
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Humidity Out of Bounds Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": null,
+          "alarmType": "Humidity Out of Bounds",
+          "severity": "MAJOR",
+          "propagate": false,
+          "relationTypes": [],
+          "propagateToOwner": null,
+          "propagateToTenant": null,
+          "dynamicSeverity": null
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 988,
+          "layoutY": 473
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Close Humidity Out of Bounds Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "alarmType": "Humidity Out of Bounds"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 990,
+          "layoutY": 535
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Open Door",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "",
+          "tbelScript": "validUID = metadata.shared_validUID;\ndoorStatus = metadata.shared_door;\n\nif(msg.uid==validUID){\n    \n    if(doorStatus==\"open\")\n        msg.attributes = {\n            door: \"closed\",\n            rgb: \"Green\"\n        }\n    } else {\n        msg.attributes = {\n            door: \"open\",\n            rgb: \"Green\"\n        }\n    }\n    \n    \n    metadata.attributesScope = \"SHARED_SCOPE\";\n\n}\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 991,
+          "layoutY": 602
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "save data from sensor",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "defaultTTL": 0
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 741,
+          "layoutY": 258
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save Shared Attributes",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "scope": "SHARED_SCOPE",
+          "notifyDevice": false,
+          "sendAttributesUpdatedNotification": false,
+          "updateAttributesOnlyOnValueChange": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1327,
+          "layoutY": 769
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "TempRange",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "fetchTo": "METADATA",
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [
+            "maxTemp",
+            "minTemp"
+          ],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 472,
+          "layoutY": 353
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "UIDs",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "fetchTo": "METADATA",
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [
+            "validUID",
+            "henUID",
+            "door"
+          ],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 475,
+          "layoutY": 636
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "FSM",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "fetchTo": "METADATA",
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [
+            "minWeight",
+            "avgWeight",
+            "state",
+            "henUID",
+            "validUID"
+          ],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 465,
+          "layoutY": 882
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "HumRange",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "fetchTo": "METADATA",
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [
+            "maxHum",
+            "minHum"
+          ],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 472,
+          "layoutY": 503
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Reject Door Use",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "if(msg.uid!=\"None\"){\n    \n    msg.attributes = {\n        rgb: \"Red\"\n    }\n    \n    metadata.attributesScope = \"SHARED_SCOPE\";\n\n}\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 995,
+          "layoutY": 686
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "RGB",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "fetchTo": "METADATA",
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [
+            "rgb"
+          ],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 469,
+          "layoutY": 759
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check RGB",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "rgbStatus = metadata.shared_rgb;\n\nif(rgbStatus!=\"Off\"){\n    return true;\n} else return false;\n"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 733,
+          "layoutY": 760
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Turn Off RGB",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "msg.attributes = {\n    rgb: \"Off\"\n}\n    \nmetadata.attributesScope = \"SHARED_SCOPE\";\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 994,
+          "layoutY": 770
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check FSM State",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "stateFSM = metadata.shared_state;\nhenUID = metadata.shared_henUID;\nvalidUID = metadata.shared_validUID;\nminWeight = metadata.shared_minWeight;\n\nif(stateFSM==\"Waiting for Hen\"){\n    \n    if(msg.uid==henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Hen Inside\") {\n        \n    if(msg.uid!=henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Eggs Inside\") {\n        \n    if(msg.uid==validUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Recolecting Eggs\") {\n        \n    if(msg.weight < minWeight){\n        return true;\n    } else return false;\n    \n} else return false;\n"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 728,
+          "layoutY": 885
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Change FSM State",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "stateFSM = metadata.shared_state;\navgWeight = metadata.shared_avgWeight;\nminWeight = metadata.shared_minWeight;\n\nif(stateFSM==\"Waiting for Hen\"){\n    \n    msg.attributes = {\n        state: \"Hen Inside\",\n        eggs: \"--\"\n    }\n    \n} else if (stateFSM==\"Hen Inside\") {\n    if(msg.weight < minWeight){\n        msg.attributes = {\n            state: \"Waiting for Hen\",\n            eggs: 0\n        }\n    } else {\n        eggAmount = msg.weight/avgWeight;\n    \n        estimatedEggs = Math.round(eggAmount);\n        \n        msg.attributes = {\n            state: \"Eggs Inside\",\n            door: \"closed\",\n            eggs: estimatedEggs\n        }\n    }\n    \n} else if (stateFSM==\"Eggs Inside\") {\n        \n    msg.attributes = {\n        state: \"Recolecting Eggs\"\n    }\n    \n} else if (stateFSM==\"Recolecting Eggs\") {\n        \n    msg.attributes = {\n        state: \"Waiting for Hen\",\n        eggs: 0\n    }\n    \n}\n\nmetadata.attributesScope = \"SHARED_SCOPE\";\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 997,
+          "layoutY": 882
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbCheckMessageNode",
+        "name": "Check Initialization",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "messageNames": [
+            "init"
+          ],
+          "metadataNames": [],
+          "checkAllKeys": true
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 479,
+          "layoutY": 1
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Device Initialization",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "msg.attributes = {\n    rgb: \"Off\",\n    door: \"open\",\n    eggs: 0,\n    state: \"Waiting for Hen\"\n}\n    \nmetadata.attributesScope = \"SHARED_SCOPE\";\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 977,
+          "layoutY": 0
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 2,
+        "type": "False"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 3,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 12,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 14,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 15,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 16,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 17,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 19,
+        "type": "True"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 0,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 24,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 7,
+        "type": "True"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 8,
+        "type": "False"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 9,
+        "type": "True"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 10,
+        "type": "False"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 11,
+        "type": "True"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 18,
+        "type": "False"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 13,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 4,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 15,
+        "toIndex": 6,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 16,
+        "toIndex": 22,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 17,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 18,
+        "toIndex": 13,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 19,
+        "toIndex": 20,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 20,
+        "toIndex": 21,
+        "type": "True"
+      },
+      {
+        "fromIndex": 21,
+        "toIndex": 13,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 22,
+        "toIndex": 23,
+        "type": "True"
+      },
+      {
+        "fromIndex": 23,
+        "toIndex": 13,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 24,
+        "toIndex": 25,
+        "type": "True"
+      },
+      {
+        "fromIndex": 25,
+        "toIndex": 13,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}

@@ -83,14 +83,14 @@ Once the telemetry reaches the \textbf{ThingsBoard} platform, the workflow trans
     \item \textbf{Autonomous Actuation}: If the sensors detect a weight increase consistent with an egg but the \gls{UID} indicates the hen has left, the platform pushes a \textbf{Shared Attribute} update.
     \item \textbf{Remote Sync}: This attribute update is received by the ESP32's \texttt{mqttCallback}, which immediately triggers the servos to close the nest door, protecting the production until a person identifies themselves to collect it.
 \end{itemize}
-
+\todo{add init y alarms}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/nest_workflow.png}
     \caption{\acrshort{NEST} Device Workflow Sequence Diagram}
     \label{fig:nest_workflow}
 \end{figure}
-
+\todo{rule chain}
 %\todo{hacer workflow thingsboard}
 %
 %\begin{figure}[H]
