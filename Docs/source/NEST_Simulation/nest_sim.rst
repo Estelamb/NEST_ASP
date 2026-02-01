@@ -1,5 +1,2 @@
-Init Fleet Manager
+NEST Simulation
 ===================
-
-.. automodule:: init_fleet
-   :members:

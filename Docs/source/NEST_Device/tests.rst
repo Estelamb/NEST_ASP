@@ -1,5 +1,3 @@
-Commands Action Server
+Test
 ======================
 
-.. automodule:: commands_action_server
-   :members:

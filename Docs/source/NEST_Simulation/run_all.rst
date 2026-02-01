@@ -1,5 +1,3 @@
-Commands Action Client
+Run All
 ======================
 
-.. automodule:: commands_action_client
-   :members:
