@@ -76,7 +76,7 @@ To evaluate the platform's performance with multiple devices, the system include
 The centralized management of the \gls{NEST} ecosystem is performed through the ThingsBoard \gls{IoT} platform. This service acts as the core for data ingestion, device management, data visualization, and remote commanding.
 
 \vspace{+10pt}
-\textbf{Device Management}\todo{change}
+\textbf{Device Management}
 
 To ensure a standardized configuration across the network, a specific \textbf{Device Profile} named \texttt{\gls{NEST} Device} has been created. This profile defines the common behavior, transport configurations, and alarm rules for all nodes in the coop. Currently, four operational devices have been provisioned under this profile:
 \begin{itemize}
@@ -84,13 +84,13 @@ To ensure a standardized configuration across the network, a specific \textbf{De
     \item \textbf{\gls{NEST} 2, \gls{NEST} 3, and \gls{NEST} 4:} Simulated nodes running the Python-based \gls{FSM} to test hybrid deployment and scalability.
 \end{itemize}
 
-The platform utilizes \textbf{Shared Attributes} to maintain the digital twin of each device and enable remote commanding. These attributes are stored on the server and synchronized with the devices via \gls{MQTT}. As shown in \autoref{fig:shared_attributes}, the following key attributes are managed:
+The platform utilizes \textbf{Shared Attributes} to enable remote commanding. These attributes are stored on the server and synchronized with the devices via \gls{MQTT}. As shown in \autoref{fig:shared_attributes}, the following key attributes are managed:
 \begin{itemize}
     \item \texttt{door}: Controls the physical state of the nesting box (\textit{open} or \textit{closed}).
     \item \texttt{rgb}: Sets the color of the \gls{RGB} \gls{LED} (\textit{Red, Green, Blue}).
     \item \texttt{period}: Defines the telemetry transmission interval in milliseconds.
-    \item \texttt{location}: Static geographic coordinates (\texttt{latitude} and \texttt{longitude}) for asset tracking.
-    \item \texttt{nest\_id}: A unique identifier for the specific physical location within the farm.
+    \item \texttt{state}: Current state of the \gls{FSM}.
+    \item \texttt{eggs}: Estimated amount of eggs.
 \end{itemize}
 
 \begin{figure}[H]
@@ -98,6 +98,41 @@ The platform utilizes \textbf{Shared Attributes} to maintain the digital twin of
     \includegraphics[width=0.9\textwidth]{images/shared_attributes.png} 
     \caption{ThingsBoard Shared Attributes Configuration}
     \label{fig:shared_attributes}
+\end{figure}
+
+The platform utilizes \textbf{Server Attributes} to maintain the digital twin of each device. These attributes are modified on the server with the Rule Engine. As shown in \autoref{fig:server_attributes}, the following key attributes are managed:
+\begin{itemize}
+    \item \texttt{nest\_id}: A unique identifier for the specific physical location within the farm.
+    \item \texttt{active}: Indicates whether the device is currently operational.
+    \item \texttt{inactivityAlarmTime}: Time threshold for inactivity alarm generation.
+    \item \texttt{lastActivityTime}: Timestamp of the last received telemetry data.
+    \item \texttt{lastConnectTime}: Timestamp of the last successful connection to the server.
+    \item \texttt{lastDisconnectTime}: Timestamp of the last disconnection from the server.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/server_attributes.png} 
+    \caption{ThingsBoard Server Attributes Configuration}
+    \label{fig:server_attributes}
+\end{figure}
+
+The client can modify the \textbf{Client Attributes} to change configuration data on the device. These attributes can be read on the server side. As shown in \autoref{fig:client_attributes}, the following key attributes are managed:
+
+\begin{itemize}
+    \item \texttt{latitude / longitude}: Geographic latitude and longitude coordinates of the device.
+    \item \texttt{maxTemp / minTemp}: Maximum and minimum temperature thresholds for alarm generation.
+    \item \texttt{maxHum / minHum}: Maximum and minimum humidity thresholds for alarm generation.
+    \item \texttt{avgWeight / minWeight}: Average and minimum weight thresholds to estimate egg presence.
+    \item \texttt{validUID}: Authorized \gls{UID} for door access.
+    \item \texttt{henUID}: \gls{UID} of the hen.
+\end{itemize}
+\todo{image}
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=0.9\textwidth]{images/client_attributes.png} 
+    \caption{ThingsBoard Client Attributes Configuration}
+    \label{fig:client_attributes}
 \end{figure}
 
 The system performs continuous data ingestion from both physical and simulated sources. The telemetry stream provides real-time visibility into the farm's conditions. Each device pushes a \gls{JSON} payload containing:
@@ -124,7 +159,7 @@ For this project, a specific \textbf{Rule Chains} has been developed named \text
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/rule_chain.png}
-    \caption{Real-time telemetry data}
+    \caption{Rule Chain for \acrshort{NEST} Device}
     \label{fig:rule_chain}
 \end{figure}
 
@@ -137,7 +172,7 @@ The weight, if it is above a minimun threshold it checks how many eggs are expec
 
 
 \vspace{+10pt}
-\textbf{Dashboard}\todo{change photos}
+\textbf{Dashboard}
 
 The visualization layer is implemented through a multi-state interactive dashboard designed to provide both a global overview of the farm and detailed insights into individual nodes.
 
@@ -147,7 +182,7 @@ The primary dashboard state (see \autoref{fig:main_dashboard}) is designed for h
     \item \textbf{Entities Summary Table:} A real-time grid displaying the current \texttt{temperature}, \texttt{humidity}, \texttt{weight}, and \texttt{door status} for all devices in the network.
     \item \textbf{Global Alarms Feed:} A centralized list showing active alarms across the entire ecosystem.
 \end{itemize}
-
+\todo{change foto}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/main.png} 
@@ -156,7 +191,7 @@ The primary dashboard state (see \autoref{fig:main_dashboard}) is designed for h
 \end{figure}
 
 To enable drill-down capabilities, the dashboard implements a \textbf{state-based navigation} logic. By clicking on a specific device name in the table or its marker on the map, the dashboard transitions to a "Details" state (see \autoref{fig:details_view}). 
-
+\todo{change foto}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{images/click.png} 
