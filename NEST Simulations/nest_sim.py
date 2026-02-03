@@ -146,8 +146,8 @@ def run():
         while True:
             nest.update_logic()
             payload = {
-                "temperature": round(random.uniform(21, 24), 2),
-                "humidity": round(random.uniform(40, 60), 2),
+                "temperature": round(random.uniform(5, 20), 2),
+                "humidity": round(random.uniform(60, 90), 2),
                 "weight": nest.current_weight, 
                 "uid": nest.current_uid 
             }
