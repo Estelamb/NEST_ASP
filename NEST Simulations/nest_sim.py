@@ -36,7 +36,7 @@ class SmartNest:
         
         # Persistence control for each state in the simulation
         self.state_counter = 0
-        self.target_repeats = random.randint(5, 20)
+        self.target_repeats = random.randint(3, 10)
 
     def update_logic(self):
         """
