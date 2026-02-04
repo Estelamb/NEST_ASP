@@ -40,44 +40,44 @@ class SmartNest:
 
     def update_logic(self):
         """
-        Updates the cyclic logic of the nest. 
-        
-        Controls state transitions based on random counters and verifies if 
-        the door is blocked to prevent physical state changes. 
+        Updates the cyclic logic. The farmer UID is sent once, 
+        while the hen UID persists while she is inside.
         """
-        
-        # Transition logic: If the random persistence time is reached
+        # 1. Transition logic
         if self.state_counter >= self.target_repeats:
             next_state_idx = (self.current_state_idx + 1) % len(self.states)
             
-            # Blocking logic: If the door is closed, hens or persons cannot enter 
             if self.door_status.lower() == "closed" and self.states[self.current_state_idx] == "WAITING_FOR_HEN":
-                return # Stay in current state if door prevents passage
+                return 
             
-            # Perform state transition
             self.current_state_idx = next_state_idx
             self.state_counter = 0 
             self.target_repeats = random.randint(5, 30)
             print(f"[{self.name}] - Transitioning to: {self.states[self.current_state_idx]}")
 
         self.state_counter += 1
+        state = self.states[self.current_state_idx]
         
-        # Generation of synthetic data based on current state
+        # 2. State Initialization (runs on the first tick of every state)
         if self.state_counter == 1:
-            state = self.states[self.current_state_idx]
             if state == "WAITING_FOR_HEN":
                 self.current_uid = "None"
                 self.current_weight = 0.0
             elif state == "HEN_INSIDE":
-                self.current_uid = "9104EE5D" # Example UID for a hen
+                self.current_uid = "9104EE5D" 
                 self.current_weight = round(random.uniform(2000, 3500), 2)
             elif state == "EGGS_DEPOSITED":
                 self.current_uid = "None"
-                # Weight proportional to 1-3 eggs (approx 65g each)
                 self.current_weight = (random.randint(1, 3) * 65)
             elif state == "PERSON_COLLECTING":
-                self.current_uid = "11580C5D" # Example UID for the farmer 
+                self.current_uid = "11580C5D" # Farmer UID
                 self.current_weight = 0.0 
+        
+        # 3. Specific Reset Logic (runs on every tick AFTER the first one)
+        else:
+            if state == "PERSON_COLLECTING":
+                # Clear the farmer UID after the first transmission
+                self.current_uid = "None"
 
 def on_message(client, userdata, msg):
     """
