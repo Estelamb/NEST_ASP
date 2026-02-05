@@ -51,7 +51,7 @@ The simulation is built using the \texttt{paho-mqtt} library, which establishes 
     \item \texttt{WAITING\_FOR\_HEN}: The default idle state with zero weight and no identified \gls{UID}.
     \item \texttt{HEN\_INSIDE}: Simulates a hen's presence by generating a random weight (2000g-3500g) and assigning a specific \gls{UID}.
     \item \texttt{EGGS\_DEPOSITED}: Represents the state where the hen has left (\gls{UID}: None), but the weight of the deposited eggs remains.
-    \item \texttt{PERSON\_COLLECTING}: Simulates an authorized user collecting the production, identified by a unique \gls{UID}.
+    \item \texttt{PERSON\_COLLECTING}: Simulates an authorized user collecting the eggs, identified by a unique \gls{UID}.
 \end{itemize}
 
 To evaluate the platform's performance with multiple devices, the system includes an automated deployment workflow. This consists of a \texttt{tokens.txt} provisioning file and a batch script (\texttt{run\_all.bat}) that launches multiple simulation instances simultaneously, each with its unique credentials and virtual identity.
@@ -86,8 +86,8 @@ To ensure a standardized configuration across the network, a specific \textbf{De
 
 The platform utilizes \textbf{Shared Attributes} to enable remote commanding. These attributes are stored on the server and synchronized with the devices via \gls{MQTT}. As shown in \autoref{fig:shared_attributes}, the following key attributes are managed:
 \begin{itemize}
-    \item \texttt{door}: Controls the physical state of the nesting box (\textit{open} or \textit{closed}).
-    \item \texttt{rgb}: Sets the color of the \gls{RGB} \gls{LED} (\textit{Red, Green, Blue}).
+    \item \texttt{door}: Controls the physical state of the nesting box (\texttt{open} or \texttt{closed}).
+    \item \texttt{rgb}: Sets the color of the \gls{RGB} \gls{LED} (\texttt{Red, Green, Blue}).
     \item \texttt{period}: Defines the telemetry transmission interval in milliseconds.
     \item \texttt{state}: Current state of the \gls{FSM}.
     \item \texttt{eggs}: Estimated amount of eggs.
@@ -95,7 +95,7 @@ The platform utilizes \textbf{Shared Attributes} to enable remote commanding. Th
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/shared_attributes.png} 
+    \includegraphics[width=0.85\textwidth]{images/shared_attributes.png} 
     \caption{ThingsBoard Shared Attributes Configuration}
     \label{fig:shared_attributes}
 \end{figure}
@@ -112,7 +112,7 @@ The platform utilizes \textbf{Server Attributes} to maintain the digital twin of
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/server_attributes.png} 
+    \includegraphics[width=0.85\textwidth]{images/server_attributes.png} 
     \caption{ThingsBoard Server Attributes Configuration}
     \label{fig:server_attributes}
 \end{figure}
@@ -127,10 +127,10 @@ The client can modify the \textbf{Client Attributes} to change configuration dat
     \item \texttt{validUID}: Authorized \gls{UID} for door access.
     \item \texttt{henUID}: \gls{UID} of the hen.
 \end{itemize}
-\todo{image}
+
 \begin{figure}[H]
     \centering
-    %\includegraphics[width=0.9\textwidth]{images/client_attributes.png} 
+    \includegraphics[width=0.85\textwidth]{images/client_attributes.png} 
     \caption{ThingsBoard Client Attributes Configuration}
     \label{fig:client_attributes}
 \end{figure}
@@ -144,31 +144,50 @@ The system performs continuous data ingestion from both physical and simulated s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/telemetry_data.png}
+    \includegraphics[width=0.85\textwidth]{images/telemetry_data.png}
     \caption{Real-Time Telemetry Data}
     \label{fig:telemetry_stream}
 \end{figure}
 
 
 \clearpage
-\textbf{Rule Chain}\todo{change}
+\textbf{Rule Chain}
 
-The main characteristic of ThingsBoard are their \textbf{Rule chains}, which when an input is detected execute a series of actions determinated by its nodes and the configuration.
-For this project, a specific \textbf{Rule Chains} has been developed named \texttt{NEST Device}, which can be seen below (\autoref{fig:rule_chain}).
+The centralized logic of the \gls{NEST} ecosystem is governed by a custom rule chain named \texttt{NEST Device}. This engine processes incoming data through a series of filtering, enrichment, and action nodes to automate the \gls{NEST}'s behavior and notify the user of critical events in real-time.
+
+When a message reaches the server, a \textbf{Message Type Switch} node segregates traffic based on its nature. The system primarily handles the following interaction streams: 
+\begin{itemize} 
+    \item \textbf{Telemetry Processing:} Incoming telemetry—comprising \texttt{temperature}, \texttt{humidity}, \texttt{weight}, and \texttt{uid}—is validated by a \textbf{Check Telemetry} node. If the required keys are missing, a \texttt{MAJOR} alarm titled "Incorrect Message Syntax" is created. Valid data is persisted in the database via the \textbf{save data from sensor} node. 
+    \item \textbf{Attribute Management:} The system processes \texttt{Post attributes} messages to update client-side configurations, such as geographic coordinates or sensor thresholds, using the \textbf{Save Client Attributes} node. 
+\end{itemize}
+
+The rule chain implements a comprehensive set of business logic to manage the nesting box lifecycle, environmental safety, and secure access:
+
+\begin{itemize}
+    \item \textbf{Device Initialization}: To ensure the system starts in a known state, the \textbf{Check Initialization} node detects \texttt{init} messages. Upon detection, the \textbf{Device Initialization} transformation node resets the \gls{FSM} to \texttt{Waiting for Hen}, clears the egg count, opens the door, and turns off the \gls{RGB} \gls{LED}.
+    
+    \item \textbf{Environmental Monitoring}: The system uses a "Fetch-and-Check" strategy. Metadata is enriched with thresholds (\texttt{maxTemp}, \texttt{minHum}, etc.) via the \textbf{TempRange} and \textbf{HumRange} nodes. Subsequently, \textbf{\gls{TBEL}} scripts in the \textbf{Check Temperature} and \textbf{Check Humidity} nodes evaluate if the real-time values fall outside these safe bounds, triggering or clearing \texttt{MAJOR} alarms accordingly.
+    
+    \item \textbf{Access Control and Interactive Feedback}: Door security is managed by the \textbf{UIDs} attribute node. If the incoming \texttt{uid} matches the \texttt{validUID} (farmer), the \textbf{Open Door} node toggles the \texttt{door} shared attribute and sets the \gls{LED} to \texttt{Green}. If the \texttt{uid} is unrecognized but not "None", the \textbf{Reject Door Use} node provides visual feedback by turning the \gls{LED} \texttt{Red}. The \textbf{Turn Off RGB} node ensures the \gls{LED} returns to an idle state after any interaction.
+    
+    \item \textbf{\gls{FSM} Integration}: A sophisticated \textbf{Finite State Machine (FSM)} tracks the biological and operational cycle: 
+    \begin{itemize} 
+        \item \textbf{Waiting for Hen / Hen Inside:} The \textbf{Check FSM State} node triggers a transition when the \texttt{henUID} is identified. 
+        \item \textbf{Eggs Inside:} When the hen leaves and a residual weight is detected, the \textbf{Change FSM State} node calculates the number of eggs using the formula: $\text{round}(\text{weight} / \text{avgWeight})$. This triggers a \texttt{CRITICAL} \textbf{Eggs Inside} alarm.
+        \item \textbf{Recolecting Eggs:} The state transitions to \texttt{Recolecting Eggs} when an authorized \texttt{validUID} is detected while eggs are present. Once the weight drops below \texttt{minWeight}, the system resets to the initial state.
+    \end{itemize}
+
+    \item \textbf{Telegram Notification System}: This implementation features a real-time alerting bridge. Whenever environmental alarms or \texttt{CRITICAL} production alerts (like egg detection) are triggered, a \textbf{Transformation Node} generates a formatted string. This payload is sent via a \textbf{\gls{REST} \gls{API} Call} node to the Telegram Bot \gls{API}, providing the farmer with immediate status updates and device identification directly on their mobile device.
+    
+    \item \textbf{Error Handling}: Reliability is reinforced by the \textbf{Check Error} node. If the hardware reports an internal failure through an \texttt{error} key, the \textbf{Hardware Error} node creates a \texttt{CRITICAL} alarm containing the specific error message and a timestamp, immediately notifying the user via Telegram to prevent data loss or animal distress.
+\end{itemize}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/rule_chain.png}
+    \includegraphics[height=0.9\linewidth, angle=270]{images/rule_chain.png}
     \caption{Rule Chain for \acrshort{NEST} Device}
     \label{fig:rule_chain}
 \end{figure}
-
-When messages arrive, the rule chain filters for \textit{Post telemetry} messages and checks for the expected fields, and saves the data in the device's latest telemetry. If none of the fields are present an alarm is created to inform of a problem.
-
-Then the message is enriched in different ways with the device's shared attributes that define the ranges of the telemetry values. First, temperature and humidity are checked to be in the accepted range, if not another alarm is created.
-
-The weight, if it is above a minimun threshold it checks how many eggs are expected base on the averge weight. If there are eggs and no UID is detected, it sets the door attribute to "closed" and the sets the expected amount of eggs. If a valid UID is detected, meanwhile the door is closed, it sets the attribute to "open".
-
 
 
 \vspace{+10pt}
@@ -178,11 +197,11 @@ The visualization layer is implemented through a multi-state interactive dashboa
 
 The primary dashboard state (see \autoref{fig:main_dashboard}) is designed for high-level monitoring. It integrates three main functional areas:
 \begin{itemize}
-    \item \textbf{Geographic Map:} Utilizing the \textit{OpenStreet Map} widget, all four devices (\gls{NEST} 1-4) are geolocated based on their \texttt{latitude} and \texttt{longitude} attributes. The markers provide a quick visual reference of the sensors' physical distribution.
+    \item \textbf{Geographic Map:} Utilizing the \texttt{OpenStreet Map} widget, all four devices (\gls{NEST} 1-4) are geolocated based on their \texttt{latitude} and \texttt{longitude} attributes. The markers provide a quick visual reference of the sensors' physical distribution.
     \item \textbf{Entities Summary Table:} A real-time grid displaying the current \texttt{temperature}, \texttt{humidity}, \texttt{weight}, and \texttt{door status} for all devices in the network.
     \item \textbf{Global Alarms Feed:} A centralized list showing active alarms across the entire ecosystem.
 \end{itemize}
-\todo{change foto}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/main.png} 
@@ -191,10 +210,10 @@ The primary dashboard state (see \autoref{fig:main_dashboard}) is designed for h
 \end{figure}
 
 To enable drill-down capabilities, the dashboard implements a \textbf{state-based navigation} logic. By clicking on a specific device name in the table or its marker on the map, the dashboard transitions to a "Details" state (see \autoref{fig:details_view}). 
-\todo{change foto}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{images/click.png} 
+    \includegraphics[width=0.25\textwidth]{images/click.png} 
     \caption{Marker Information Popup}
     \label{fig:marker}
 \end{figure}
@@ -214,4 +233,3 @@ This view focuses exclusively on the telemetry of the selected node:
 \end{figure}
 
 \subsubsection{Telegram}
-\todo{telegram}

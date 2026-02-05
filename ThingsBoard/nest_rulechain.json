@@ -11,7 +11,7 @@
     }
   },
   "metadata": {
-    "version": 67,
+    "version": 70,
     "firstNodeIndex": 1,
     "nodes": [
       {
@@ -33,8 +33,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 578,
-          "layoutY": 330
+          "layoutX": 581,
+          "layoutY": 468
         }
       },
       {
@@ -70,8 +70,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1058,
-          "layoutY": 134
+          "layoutX": 1061,
+          "layoutY": 272
         }
       },
       {
@@ -87,8 +87,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1061,
-          "layoutY": 205
+          "layoutX": 1064,
+          "layoutY": 343
         }
       },
       {
@@ -105,8 +105,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1061,
-          "layoutY": 338
+          "layoutX": 1127,
+          "layoutY": 474
         }
       },
       {
@@ -123,8 +123,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1060,
-          "layoutY": 487
+          "layoutX": 1126,
+          "layoutY": 623
         }
       },
       {
@@ -141,8 +141,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1048,
-          "layoutY": 621
+          "layoutX": 1114,
+          "layoutY": 757
         }
       },
       {
@@ -168,8 +168,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1307,
-          "layoutY": 300
+          "layoutX": 1373,
+          "layoutY": 436
         }
       },
       {
@@ -187,8 +187,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1307,
-          "layoutY": 372
+          "layoutX": 1373,
+          "layoutY": 508
         }
       },
       {
@@ -214,8 +214,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1306,
-          "layoutY": 457
+          "layoutX": 1372,
+          "layoutY": 593
         }
       },
       {
@@ -233,14 +233,14 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1308,
-          "layoutY": 519
+          "layoutX": 1374,
+          "layoutY": 655
         }
       },
       {
         "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
         "name": "Open Door",
-        "debugMode": true,
+        "debugMode": false,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 0,
@@ -251,8 +251,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1309,
-          "layoutY": 586
+          "layoutX": 1375,
+          "layoutY": 722
         }
       },
       {
@@ -267,14 +267,14 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1062,
-          "layoutY": 265
+          "layoutX": 1065,
+          "layoutY": 403
         }
       },
       {
         "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
         "name": "Save Shared Attributes",
-        "debugMode": true,
+        "debugMode": false,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 2,
@@ -286,8 +286,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1634,
-          "layoutY": 754
+          "layoutX": 1700,
+          "layoutY": 890
         }
       },
       {
@@ -311,8 +311,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 790,
-          "layoutY": 337
+          "layoutX": 856,
+          "layoutY": 473
         }
       },
       {
@@ -338,8 +338,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 793,
-          "layoutY": 620
+          "layoutX": 859,
+          "layoutY": 756
         }
       },
       {
@@ -367,8 +367,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 783,
-          "layoutY": 866
+          "layoutX": 849,
+          "layoutY": 1002
         }
       },
       {
@@ -392,8 +392,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 790,
-          "layoutY": 487
+          "layoutX": 856,
+          "layoutY": 623
         }
       },
       {
@@ -410,8 +410,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1313,
-          "layoutY": 670
+          "layoutX": 1379,
+          "layoutY": 806
         }
       },
       {
@@ -434,8 +434,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 787,
-          "layoutY": 743
+          "layoutX": 853,
+          "layoutY": 879
         }
       },
       {
@@ -452,8 +452,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1051,
-          "layoutY": 744
+          "layoutX": 1117,
+          "layoutY": 880
         }
       },
       {
@@ -470,8 +470,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1312,
-          "layoutY": 754
+          "layoutX": 1378,
+          "layoutY": 890
         }
       },
       {
@@ -488,14 +488,14 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1046,
-          "layoutY": 869
+          "layoutX": 1112,
+          "layoutY": 1005
         }
       },
       {
         "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
         "name": "Change FSM State",
-        "debugMode": true,
+        "debugMode": false,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 0,
@@ -506,8 +506,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1315,
-          "layoutY": 866
+          "layoutX": 1381,
+          "layoutY": 1002
         }
       },
       {
@@ -526,8 +526,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 572,
-          "layoutY": 962
+          "layoutX": 575,
+          "layoutY": 1100
         }
       },
       {
@@ -544,8 +544,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1318,
-          "layoutY": 961
+          "layoutX": 1384,
+          "layoutY": 1097
         }
       },
       {
@@ -564,8 +564,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 588,
-          "layoutY": 19
+          "layoutX": 591,
+          "layoutY": 157
         }
       },
       {
@@ -591,8 +591,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1052,
-          "layoutY": 3
+          "layoutX": 1055,
+          "layoutY": 141
         }
       },
       {
@@ -610,8 +610,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1049,
-          "layoutY": 60
+          "layoutX": 1052,
+          "layoutY": 198
         }
       },
       {
@@ -639,8 +639,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 573,
-          "layoutY": 1098
+          "layoutX": 576,
+          "layoutY": 1236
         }
       },
       {
@@ -658,8 +658,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1028,
-          "layoutY": 1099
+          "layoutX": 1031,
+          "layoutY": 1237
         }
       },
       {
@@ -694,8 +694,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1940,
-          "layoutY": 333
+          "layoutX": 2005,
+          "layoutY": 391
         }
       },
       {
@@ -712,8 +712,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1652,
-          "layoutY": 161
+          "layoutX": 1714,
+          "layoutY": 305
         }
       },
       {
@@ -730,8 +730,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1657,
-          "layoutY": 446
+          "layoutX": 1706,
+          "layoutY": 475
         }
       },
       {
@@ -748,8 +748,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1634,
-          "layoutY": 967
+          "layoutX": 1700,
+          "layoutY": 1103
         }
       },
       {
@@ -775,8 +775,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1863,
-          "layoutY": 901
+          "layoutX": 1929,
+          "layoutY": 1037
         }
       },
       {
@@ -794,8 +794,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1861,
-          "layoutY": 1024
+          "layoutX": 1927,
+          "layoutY": 1160
         }
       },
       {
@@ -812,8 +812,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 2119,
-          "layoutY": 954
+          "layoutX": 2208,
+          "layoutY": 1089
         }
       },
       {
@@ -837,8 +837,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 576,
-          "layoutY": 183
+          "layoutX": 579,
+          "layoutY": 321
         }
       }
     ],
