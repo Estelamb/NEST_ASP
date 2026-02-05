@@ -11,7 +11,7 @@
     }
   },
   "metadata": {
-    "version": 19,
+    "version": 67,
     "firstNodeIndex": 1,
     "nodes": [
       {
@@ -33,8 +33,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 230,
-          "layoutY": 352
+          "layoutX": 578,
+          "layoutY": 330
         }
       },
       {
@@ -49,8 +49,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 275,
-          "layoutY": 150
+          "layoutX": 276,
+          "layoutY": 151
         }
       },
       {
@@ -70,8 +70,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 742,
-          "layoutY": 82
+          "layoutX": 1058,
+          "layoutY": 134
         }
       },
       {
@@ -87,8 +87,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 737,
-          "layoutY": 165
+          "layoutX": 1061,
+          "layoutY": 205
         }
       },
       {
@@ -101,12 +101,12 @@
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return msg.temperature > 20;",
-          "tbelScript": "maxTemp = metadata.shared_maxTemp;\nminTemp = metadata.shared_minTemp;\n\nif(msg.temperature<minTemp||msg.temperature>maxTemp){\n    return true;\n}else return false;"
+          "tbelScript": "maxTemp = metadata.cs_maxTemp;\nminTemp = metadata.cs_minTemp;\n\nif(msg.temperature<minTemp||msg.temperature>maxTemp){\n    return true;\n}else return false;"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 743,
-          "layoutY": 354
+          "layoutX": 1061,
+          "layoutY": 338
         }
       },
       {
@@ -119,12 +119,12 @@
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return msg.temperature > 20;",
-          "tbelScript": "maxHum = metadata.shared_maxHum;\nminHum = metadata.shared_minHum;\n\nif(msg.humidity<minHum||msg.humidity>maxHum){\n    return true;\n}else return false;"
+          "tbelScript": "maxHum = metadata.cs_maxHum;\nminHum = metadata.cs_minHum;\n\nif(msg.humidity<minHum||msg.humidity>maxHum){\n    return true;\n}else return false;"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 742,
-          "layoutY": 503
+          "layoutX": 1060,
+          "layoutY": 487
         }
       },
       {
@@ -137,12 +137,12 @@
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return msg.temperature > 20;",
-          "tbelScript": "validUID = metadata.shared_validUID;\nhenUID = metadata.shared_henUID;\n\nif(msg.uid==validUID || msg.uid==henUID){\n    return true;\n}else return false;"
+          "tbelScript": "validUID = metadata.cs_validUID;\nhenUID = metadata.cs_henUID;\n\nif(msg.uid==validUID || msg.uid==henUID){\n    return true;\n}else return false;"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 730,
-          "layoutY": 637
+          "layoutX": 1048,
+          "layoutY": 621
         }
       },
       {
@@ -168,8 +168,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 988,
-          "layoutY": 319
+          "layoutX": 1307,
+          "layoutY": 300
         }
       },
       {
@@ -187,8 +187,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 989,
-          "layoutY": 388
+          "layoutX": 1307,
+          "layoutY": 372
         }
       },
       {
@@ -214,8 +214,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 988,
-          "layoutY": 473
+          "layoutX": 1306,
+          "layoutY": 457
         }
       },
       {
@@ -233,26 +233,26 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 990,
-          "layoutY": 535
+          "layoutX": 1308,
+          "layoutY": 519
         }
       },
       {
         "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
         "name": "Open Door",
-        "debugMode": false,
+        "debugMode": true,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 0,
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "",
-          "tbelScript": "validUID = metadata.shared_validUID;\ndoorStatus = metadata.shared_door;\n\nif(msg.uid==validUID){\n    \n    if(doorStatus==\"open\")\n        msg.attributes = {\n            door: \"closed\",\n            rgb: \"Green\"\n        }\n    } else {\n        msg.attributes = {\n            door: \"open\",\n            rgb: \"Green\"\n        }\n    }\n    \n    \n    metadata.attributesScope = \"SHARED_SCOPE\";\n\n}\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+          "tbelScript": "validUID = metadata.cs_validUID;\ndoorStatus = metadata.shared_door;\n\nif(msg.uid==validUID){\n    \n    if(doorStatus==\"open\"){\n        msg.attributes = {\n            door: \"closed\",\n            rgb: \"Green\"\n        }\n    } else {\n        msg.attributes = {\n            door: \"open\",\n            rgb: \"Green\"\n        }\n    }\n    \n    \n\n}else{msg.attributes = {}}\n\nmetadata.attributesScope = \"SHARED_SCOPE\";\n\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 991,
-          "layoutY": 602
+          "layoutX": 1309,
+          "layoutY": 586
         }
       },
       {
@@ -267,14 +267,14 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 741,
-          "layoutY": 258
+          "layoutX": 1062,
+          "layoutY": 265
         }
       },
       {
         "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
         "name": "Save Shared Attributes",
-        "debugMode": false,
+        "debugMode": true,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 2,
@@ -282,12 +282,12 @@
           "scope": "SHARED_SCOPE",
           "notifyDevice": false,
           "sendAttributesUpdatedNotification": false,
-          "updateAttributesOnlyOnValueChange": false
+          "updateAttributesOnlyOnValueChange": true
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 1327,
-          "layoutY": 769
+          "layoutX": 1634,
+          "layoutY": 754
         }
       },
       {
@@ -300,19 +300,19 @@
         "configuration": {
           "tellFailureIfAbsent": true,
           "fetchTo": "METADATA",
-          "clientAttributeNames": [],
-          "sharedAttributeNames": [
+          "clientAttributeNames": [
             "maxTemp",
             "minTemp"
           ],
+          "sharedAttributeNames": [],
           "serverAttributeNames": [],
           "latestTsKeyNames": [],
           "getLatestValueWithTs": false
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 472,
-          "layoutY": 353
+          "layoutX": 790,
+          "layoutY": 337
         }
       },
       {
@@ -325,10 +325,11 @@
         "configuration": {
           "tellFailureIfAbsent": true,
           "fetchTo": "METADATA",
-          "clientAttributeNames": [],
-          "sharedAttributeNames": [
+          "clientAttributeNames": [
             "validUID",
-            "henUID",
+            "henUID"
+          ],
+          "sharedAttributeNames": [
             "door"
           ],
           "serverAttributeNames": [],
@@ -337,8 +338,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 475,
-          "layoutY": 636
+          "layoutX": 793,
+          "layoutY": 620
         }
       },
       {
@@ -351,13 +352,14 @@
         "configuration": {
           "tellFailureIfAbsent": true,
           "fetchTo": "METADATA",
-          "clientAttributeNames": [],
-          "sharedAttributeNames": [
+          "clientAttributeNames": [
             "minWeight",
             "avgWeight",
-            "state",
             "henUID",
             "validUID"
+          ],
+          "sharedAttributeNames": [
+            "state"
           ],
           "serverAttributeNames": [],
           "latestTsKeyNames": [],
@@ -365,8 +367,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 465,
-          "layoutY": 882
+          "layoutX": 783,
+          "layoutY": 866
         }
       },
       {
@@ -379,19 +381,19 @@
         "configuration": {
           "tellFailureIfAbsent": true,
           "fetchTo": "METADATA",
-          "clientAttributeNames": [],
-          "sharedAttributeNames": [
+          "clientAttributeNames": [
             "maxHum",
             "minHum"
           ],
+          "sharedAttributeNames": [],
           "serverAttributeNames": [],
           "latestTsKeyNames": [],
           "getLatestValueWithTs": false
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 472,
-          "layoutY": 503
+          "layoutX": 790,
+          "layoutY": 487
         }
       },
       {
@@ -404,12 +406,12 @@
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
-          "tbelScript": "if(msg.uid!=\"None\"){\n    \n    msg.attributes = {\n        rgb: \"Red\"\n    }\n    \n    metadata.attributesScope = \"SHARED_SCOPE\";\n\n}\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+          "tbelScript": "if(msg.uid!=\"None\"){\n    \n    msg.attributes = {\n        rgb: \"Red\"\n    }\n    \n\n}else {msg.attributes = {}}\n\nmetadata.attributesScope = \"SHARED_SCOPE\";\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 995,
-          "layoutY": 686
+          "layoutX": 1313,
+          "layoutY": 670
         }
       },
       {
@@ -432,8 +434,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 469,
-          "layoutY": 759
+          "layoutX": 787,
+          "layoutY": 743
         }
       },
       {
@@ -450,8 +452,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 733,
-          "layoutY": 760
+          "layoutX": 1051,
+          "layoutY": 744
         }
       },
       {
@@ -468,8 +470,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 994,
-          "layoutY": 770
+          "layoutX": 1312,
+          "layoutY": 754
         }
       },
       {
@@ -482,30 +484,30 @@
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return msg.temperature > 20;",
-          "tbelScript": "stateFSM = metadata.shared_state;\nhenUID = metadata.shared_henUID;\nvalidUID = metadata.shared_validUID;\nminWeight = metadata.shared_minWeight;\n\nif(stateFSM==\"Waiting for Hen\"){\n    \n    if(msg.uid==henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Hen Inside\") {\n        \n    if(msg.uid!=henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Eggs Inside\") {\n        \n    if(msg.uid==validUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Recolecting Eggs\") {\n        \n    if(msg.weight < minWeight){\n        return true;\n    } else return false;\n    \n} else return false;\n"
+          "tbelScript": "stateFSM = metadata.shared_state;\nhenUID = metadata.cs_henUID;\nvalidUID = metadata.cs_validUID;\nminWeight = metadata.cs_minWeight;\n\nif(stateFSM==\"Waiting for Hen\"){\n    \n    if(msg.uid==henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Hen Inside\") {\n        \n    if(msg.uid!=henUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Eggs Inside\") {\n        \n    if(msg.uid==validUID){\n        return true;\n    } else return false;\n    \n} else if (stateFSM==\"Recolecting Eggs\") {\n        \n    if(msg.weight < minWeight){\n        return true;\n    } else return false;\n    \n} else return false;\n"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 728,
-          "layoutY": 885
+          "layoutX": 1046,
+          "layoutY": 869
         }
       },
       {
         "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
         "name": "Change FSM State",
-        "debugMode": false,
+        "debugMode": true,
         "singletonMode": false,
         "queueName": null,
         "configurationVersion": 0,
         "configuration": {
           "scriptLang": "TBEL",
           "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
-          "tbelScript": "stateFSM = metadata.shared_state;\navgWeight = metadata.shared_avgWeight;\nminWeight = metadata.shared_minWeight;\n\nif(stateFSM==\"Waiting for Hen\"){\n    \n    msg.attributes = {\n        state: \"Hen Inside\",\n        eggs: \"--\"\n    }\n    \n} else if (stateFSM==\"Hen Inside\") {\n    if(msg.weight < minWeight){\n        msg.attributes = {\n            state: \"Waiting for Hen\",\n            eggs: 0\n        }\n    } else {\n        eggAmount = msg.weight/avgWeight;\n    \n        estimatedEggs = Math.round(eggAmount);\n        \n        msg.attributes = {\n            state: \"Eggs Inside\",\n            door: \"closed\",\n            eggs: estimatedEggs\n        }\n    }\n    \n} else if (stateFSM==\"Eggs Inside\") {\n        \n    msg.attributes = {\n        state: \"Recolecting Eggs\"\n    }\n    \n} else if (stateFSM==\"Recolecting Eggs\") {\n        \n    msg.attributes = {\n        state: \"Waiting for Hen\",\n        eggs: 0\n    }\n    \n}\n\nmetadata.attributesScope = \"SHARED_SCOPE\";\n\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
+          "tbelScript": "stateFSM = metadata.shared_state;\r\navgWeight = metadata.cs_avgWeight;\r\nminWeight = metadata.cs_minWeight;\r\n\r\nif (stateFSM == \"Waiting for Hen\") {\r\n    msg.attributes = { \r\n        state: \"Hen Inside\", \r\n        eggs: \"--\" \r\n        \r\n    };\r\n} else if (stateFSM == \"Hen Inside\") {\r\n    if (msg.weight < minWeight) {\r\n        msg.attributes = { \r\n            state: \"Waiting for Hen\", \r\n            eggs: 0 \r\n            \r\n        };\r\n    } else {\r\n        var estimatedEggs = Math.round(msg.weight / avgWeight);\r\n        msg.attributes = { \r\n            state: \"Eggs Inside\", \r\n            eggs: estimatedEggs,\r\n            door: \"closed\" \r\n            \r\n        }; \r\n    }\r\n} else if (stateFSM == \"Eggs Inside\") {\r\n    msg.attributes = { \r\n        state: \"Recolecting Eggs\" \r\n    };\r\n} else if (stateFSM == \"Recolecting Eggs\") {\r\n    msg.attributes = { \r\n        state: \"Waiting for Hen\", \r\n        eggs: 0 \r\n    };\r\n} else {msg.attributes = {}}\r\n\r\nmetadata.attributesScope = \"SHARED_SCOPE\";\r\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\r\n\r\nreturn { msg: msg.attributes, metadata: metadata, msgType: msgType }"
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 997,
-          "layoutY": 882
+          "layoutX": 1315,
+          "layoutY": 866
         }
       },
       {
@@ -524,8 +526,8 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 479,
-          "layoutY": 1
+          "layoutX": 572,
+          "layoutY": 962
         }
       },
       {
@@ -542,27 +544,305 @@
         },
         "additionalInfo": {
           "description": "",
-          "layoutX": 977,
-          "layoutY": 0
+          "layoutX": 1318,
+          "layoutY": 961
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbCheckMessageNode",
+        "name": "Check Error",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "messageNames": [
+            "error"
+          ],
+          "metadataNames": [],
+          "checkAllKeys": true
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 588,
+          "layoutY": 19
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Hardware Error",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n    //remove prevAlarmDetails from metadata\n    delete metadata.prevAlarmDetails;\n    //now metadata is the same as it comes IN this rule node\n}\n\n\nreturn details;",
+          "alarmDetailsBuildTbel": "var details = {\r\n    errorMsg: msg.error,\r\n    timestamp: new Date().toISOString()\r\n};\r\nreturn details;",
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": false,
+          "alarmType": "Hardware Error",
+          "severity": "CRITICAL",
+          "propagate": false,
+          "relationTypes": [],
+          "propagateToOwner": false,
+          "propagateToTenant": false,
+          "dynamicSeverity": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1052,
+          "layoutY": 3
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Close Hardware Error",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n    //remove prevAlarmDetails from metadata\n    delete metadata.prevAlarmDetails;\n    //now metadata is the same as it comes IN this rule node\n}\n\n\nreturn details;",
+          "alarmDetailsBuildTbel": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmType": "Harware Error"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1049,
+          "layoutY": 60
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbCheckMessageNode",
+        "name": "Check Attributes",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "messageNames": [
+            "latitude",
+            "longitude",
+            "maxTemp",
+            "minTemp",
+            "maxHum",
+            "minHum",
+            "avgWeight",
+            "minWeight",
+            "validUID",
+            "henUID"
+          ],
+          "metadataNames": [],
+          "checkAllKeys": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 573,
+          "layoutY": 1098
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save Client Attributes",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "scope": "CLIENT_SCOPE",
+          "notifyDevice": false,
+          "sendAttributesUpdatedNotification": false,
+          "updateAttributesOnlyOnValueChange": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1028,
+          "layoutY": 1099
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rest.TbRestApiCallNode",
+        "name": "Telegram Temp Alarm",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 3,
+        "configuration": {
+          "restEndpointUrlPattern": "https://api.telegram.org/bot8560879729:AAEHgMY-NWSmXSejZ07uWvmfoxJfSWEWbCw/sendMessage",
+          "requestMethod": "POST",
+          "useSimpleClientHttpFactory": false,
+          "parseToPlainText": false,
+          "ignoreRequestBody": false,
+          "enableProxy": false,
+          "useSystemProxyProperties": false,
+          "proxyScheme": null,
+          "proxyHost": null,
+          "proxyPort": 0,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "readTimeoutMs": 0,
+          "maxParallelRequestsCount": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "credentials": {
+            "type": "anonymous"
+          },
+          "maxInMemoryBufferSizeInKb": 256
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1940,
+          "layoutY": 333
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New Telegram Message",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\r\nnewMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\r\nnewMsg.chat_id = 1624527516;\r\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1652,
+          "layoutY": 161
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New Telegram Message",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\r\nnewMsg.text = '\"' +  msg.name + '\"' + \" alarm cleared for device: \" + '\"' + metadata.deviceName + '\"';\r\nnewMsg.chat_id = 1624527516;\r\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1657,
+          "layoutY": 446
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Eggs Inside",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return msg.temperature > 20;",
+          "tbelScript": "return msg.eggs > 0;"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1634,
+          "layoutY": 967
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Eggs Inside",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n    //remove prevAlarmDetails from metadata\n    delete metadata.prevAlarmDetails;\n    //now metadata is the same as it comes IN this rule node\n}\n\n\nreturn details;",
+          "alarmDetailsBuildTbel": "var details = {\r\n    message: \"Eggs detected! Count: \" + msg.eggs,\r\n    state: msg.state,\r\n    timestamp: new Date().toISOString()\r\n};\r\nreturn details;",
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": false,
+          "alarmType": "Eggs Inside",
+          "severity": "CRITICAL",
+          "propagate": false,
+          "relationTypes": [],
+          "propagateToOwner": false,
+          "propagateToTenant": false,
+          "dynamicSeverity": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1863,
+          "layoutY": 901
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "No Eggs Inside",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n    //remove prevAlarmDetails from metadata\n    delete metadata.prevAlarmDetails;\n    //now metadata is the same as it comes IN this rule node\n}\n\n\nreturn details;",
+          "alarmDetailsBuildTbel": "var details = {\r\n    message: \"Eggs Recolected\",\r\n    state: msg.state\r\n};\r\nreturn details;",
+          "alarmType": "Eggs Inside"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1861,
+          "layoutY": 1024
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New Telegram Message",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "TBEL",
+          "jsScript": "return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\r\nnewMsg.text = msg.details.message + \" \" + '(\"' + metadata.deviceName + '\")';\r\nnewMsg.chat_id = 1624527516;\r\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 2119,
+          "layoutY": 954
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbCheckMessageNode",
+        "name": "Check Telemetry Message",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "messageNames": [
+            "temperature",
+            "humidity",
+            "weight",
+            "uid",
+            "error",
+            "init"
+          ],
+          "metadataNames": [],
+          "checkAllKeys": false
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 576,
+          "layoutY": 183
         }
       }
     ],
     "connections": [
-      {
-        "fromIndex": 0,
-        "toIndex": 2,
-        "type": "False"
-      },
-      {
-        "fromIndex": 0,
-        "toIndex": 3,
-        "type": "True"
-      },
-      {
-        "fromIndex": 0,
-        "toIndex": 12,
-        "type": "True"
-      },
       {
         "fromIndex": 0,
         "toIndex": 14,
@@ -599,6 +879,21 @@
         "type": "Post telemetry"
       },
       {
+        "fromIndex": 1,
+        "toIndex": 26,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 29,
+        "type": "Post attributes"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 38,
+        "type": "Post telemetry"
+      },
+      {
         "fromIndex": 4,
         "toIndex": 7,
         "type": "True"
@@ -627,6 +922,26 @@
         "fromIndex": 6,
         "toIndex": 18,
         "type": "False"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 32,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 8,
+        "toIndex": 33,
+        "type": "Cleared"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 32,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 10,
+        "toIndex": 33,
+        "type": "Cleared"
       },
       {
         "fromIndex": 11,
@@ -684,6 +999,11 @@
         "type": "Success"
       },
       {
+        "fromIndex": 23,
+        "toIndex": 34,
+        "type": "Success"
+      },
+      {
         "fromIndex": 24,
         "toIndex": 25,
         "type": "True"
@@ -692,6 +1012,81 @@
         "fromIndex": 25,
         "toIndex": 13,
         "type": "Success"
+      },
+      {
+        "fromIndex": 26,
+        "toIndex": 27,
+        "type": "True"
+      },
+      {
+        "fromIndex": 26,
+        "toIndex": 28,
+        "type": "False"
+      },
+      {
+        "fromIndex": 27,
+        "toIndex": 32,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 28,
+        "toIndex": 33,
+        "type": "Cleared"
+      },
+      {
+        "fromIndex": 29,
+        "toIndex": 30,
+        "type": "True"
+      },
+      {
+        "fromIndex": 32,
+        "toIndex": 31,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 33,
+        "toIndex": 31,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 34,
+        "toIndex": 35,
+        "type": "True"
+      },
+      {
+        "fromIndex": 34,
+        "toIndex": 36,
+        "type": "False"
+      },
+      {
+        "fromIndex": 35,
+        "toIndex": 37,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 36,
+        "toIndex": 37,
+        "type": "Cleared"
+      },
+      {
+        "fromIndex": 37,
+        "toIndex": 31,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 38,
+        "toIndex": 2,
+        "type": "False"
+      },
+      {
+        "fromIndex": 38,
+        "toIndex": 3,
+        "type": "True"
+      },
+      {
+        "fromIndex": 38,
+        "toIndex": 12,
+        "type": "True"
       }
     ],
     "ruleChainConnections": null

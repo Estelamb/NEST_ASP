@@ -1,39 +1,44 @@
 NEST Rule Chain Logic
 =====================
 
-The **NEST Rule Chain** acts as the central intelligence of the system within ThingsBoard. It processes all incoming data from the nodes (physical or simulated), manages the "Digital Twin" state, and automates responses based on environmental and security conditions.
+The **NEST Rule Chain** acts as the central intelligence of the system within ThingsBoard. It processes incoming sensor data, manages a **Finite State Machine (FSM)** for the nest's life cycle, and automates physical responses and external notifications.
 
 Core Workflow
 -------------
 
-1. Data Validation and Filtering
+1. Message Classification and Validation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* **Message Type Switching:** The system first differentiates between ``Post telemetry``, ``Post attributes``, and other message types via the **Check Message Type** node.
+* **Telemetry Validation:** The **Check Telemetry Message** node ensures incoming data contains necessary keys such as ``temperature``, ``humidity``, ``weight``, ``uid``, ``error``, or ``init``.
+* **Hardware Error Handling:** If an ``error`` key is detected, the **Hardware Error** node creates a **CRITICAL** severity alarm including error details and a timestamp.
+
+2. Digital Twin and FSM Management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* **Telemetry Check:** The system first filters incoming messages to ensure they contain essential keys such as ``temperature``, ``humidity``, ``weight``, and ``uid``.
-* **Message Type Switching:** The rule chain distinguishes between standard telemetry (sensor data), attribute updates (device settings), and RPC (Remote Procedure Call) requests.
+The system manages the nest's state autonomously through specialized logic:
 
-2. Edge Intelligence & Digital Twin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The rule chain manages the state of the nest autonomously:
+* **Finite State Machine (FSM):** Using the ``state`` shared attribute, the **Check FSM State** and **Change FSM State** nodes control transitions between:
+    * ``Waiting for Hen``: Remains until the UID matches the ``henUID``.
+    * ``Hen Inside``: Active while the hen is detected.
+    * ``Eggs Inside``: Triggered when the hen leaves and weight is detected; it calculates estimated eggs (``weight / avgWeight``) and sets the door to ``closed``.
+    * ``Recolecting Eggs``: Allows access to the farmer (``validUID``) to reset the cycle.
+* **Access Control (UID):** The **Open Door** node validates if the incoming ``uid`` matches the ``validUID``. If it matches, it toggles the ``door`` attribute and sets the LED ``rgb`` to **Green**. Unrecognized UIDs trigger the **Reject Door Use** node, setting the LED to **Red**.
 
-* **Incubation Monitoring:** It evaluates temperature and humidity against predefined thresholds to ensure the health of the eggs.
-* **Weight & Identity Logic:** A critical logic flow correlates **Weight** (egg detection) with **UID** (hen identification). If an egg is detected and the hen leaves the nest, the system automatically updates the ``servo`` and ``lock`` attributes to secure the nest.
-* **Attribute Synchronization:** Any change in the "Server-side Attributes" is automatically pushed to the physical ESP32 or the simulation node, ensuring the hardware stays in sync with the cloud logic.
-
-3. Alarm Management
-~~~~~~~~~~~~~~~~~~~
-* **Dynamic Thresholds:** The system compares incoming data against high and low limits. If a value (like temperature) exceeds these limits, an alarm is created or updated.
-* **Alarm Life Cycle:** The logic handles the creation of alarms and ensures they are cleared once the telemetry returns to normal operating ranges.
+3. Environmental Monitoring and Alarms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* **Dynamic Thresholds:** The **TempRange** and **HumRange** nodes fetch client attributes (``maxTemp``, ``minTemp``, etc.) to use as bounds.
+* **Alarm Life Cycle:**
+    * If temperature or humidity exceeds limits, **Temperature/Humidity Out of Bounds** alarms are created.
+    * Alarms are automatically cleared when telemetry returns to the safe range.
+* **Egg Notification:** The **Eggs Inside** filter triggers a specific alarm when the egg count is greater than zero.
 
 4. External Notifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-The rule chain includes integration for external alerts:
-
-* **Telegram Integration:** When a critical event is detected (e.g., a security breach or extreme temperature), the rule chain triggers a notification to the farmer via a Telegram Bot, providing real-time updates outside the dashboard.
+* **Telegram Integration:** The rule chain connects to the Telegram API to send updates to chat ID ``1624527516``.
+* **Real-time Alerts:** Notifications are sent for created/cleared environmental alarms and when eggs are detected or collected.
 
 Technical Nodes
 ---------------
-The implementation relies on several specialized nodes:
-
-* **Script Nodes:** Used for parsing complex JSON data and calculating the nest status.
-* **Save Timeseries:** To store historical data for the dashboard charts.
-* **Rule Chain Transitions:** Complex branching based on "Success", "True/False", and "Failure" results to ensure robust error handling.
+* **TBEL Scripting:** Extensively used for FSM transitions, egg estimation logic, and RGB status management.
+* **Attribute Enrichment:** The **Get Attributes** nodes (TempRange, HumRange, UIDs, FSM) load configuration parameters into metadata before evaluation.
+* **REST API Call:** Executes POST requests to the Telegram Bot.
+* **Data Persistence:** Sensor data is saved via **Save Timeseries**, and device states are pushed to **SHARED_SCOPE** to sync with the physical hardware.
