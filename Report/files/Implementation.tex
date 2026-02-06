@@ -233,3 +233,72 @@ This view focuses exclusively on the telemetry of the selected node:
 \end{figure}
 
 \subsubsection{Telegram}
+As a way for visualization of the data and control the system, a Telegram bot named \texttt{NEST} has been created.
+In this bot, the farmar can see the data allocated in the telemetry fields, as well as the parameters configured in the attributes.
+Once the farmer has installed the bot, he will be recieving alarms from the nests. The more common are the sensor's bounds ones.
+As seen in the figure \ref{fig:boundaries_alarm}, when an alarm is created where the value of any of the sensor is out of the parameters configurated a notification message is send to telegram to inform about the sensor that has send the alarm.
+Once the value isnstable again, another message is send notifying that the alarm is unset.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/Bounds_alarms.jpeg}
+    \caption{Telegram messages boundaries notification}
+    \label{fig:boundaries_alarm}
+\end{figure}
+
+When an egg is laid, once the animal is out of the nest, a notification with the stimated number of eggs is send to the bot, as seen in figure \ref{fig:eggs_detected_alarm}, as well, when the eggs are recolected, another notification is send, as demonstrated in figure \ref{fig:eggs_recolected_alarm}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/eggs_detected_alarm.jpeg}
+    \caption{Eggs detected telegram message}
+    \label{fig:eggs_detected_alarm}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/eggs_recolected_alarm.jpeg}
+    \caption{Eggs recolected telegram message}
+    \label{fig:eggs_recolected_alarm}
+\end{figure}
+
+The telegram bots function with pre-programmed shortcuts to acces some acctions. For this project, five essential commands had been created, as display in figure \ref{fig:main_menu}:
+\begin{itemize}
+    \item \textbf{\/nest}: It is the principal command of the bot. When this command is typed, a list of the avalible nests, figure \ref{fig:nest_selection} is avalible to interect for the user.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.65\textwidth]{images/nest_selection_menu.jpeg}
+        \caption{Nest selection telegram menu}
+        \label{fig:nest_selection}
+    \end{figure}
+    \item \textbf{\/login}: For some actions to use the system, a username and a password is required, with this command the user is able tu log in the platform.
+    \item \textbf{\/logout}: If the user wants or needs to disconect from the platform they can use this command.
+    \item \textbf{\/statud}: Chekcs the status of the connection.
+    \item \textbf{\/help}: List all of the commands that the bot can use with a little explanation of how to use it.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/main_menu_bot.jpeg}
+    \caption{Main telegram menu}
+    \label{fig:main_menu}
+\end{figure}
+
+Once the nest is selected, another menu to interect with the system is displayed, figure \ref{fig:main_nest_menu}.
+The options in the menu are the following ones:
+\begin{itemize}
+    \item \textbf{Telemetry}: If logged, this option gives back the information of the telemetry in the nest selected.
+    \item \textbf{Door Control}: Shows the current state of the door.
+    \item \textbf{Temperature}: When slected, it shows the current temperature value and boundaries, it also shows how, if logged, change the boundaries of the temperature:
+    \begin{itemize}
+        \item \textbf{\/temperature max \texttt{VALUE}}: With this command the user can change te maximum value of the temperature boundaries.
+        \item \textbf{\/temperature min \texttt{VALUE}}: With this command the user can change te minimum value of the temperature boundaries.
+    \end{itemize}
+    \item \textbf{Humidity}: Similar as the Temperature option, does the same things as the other option but using \texttt{\/humidity} instead.
+    \item \textbf{RGB}: Shows the current state of the led.
+    \item \textbf{Eggs}: Shows the stimated cuantity of eggs, that correspond with the selected animal. If logged, in this menu the user can change the type of animal that is using the nest, changing, in this way, the internal parameters of the system for the calculus of the egg count.
+    \item \textbf{Location}: Shows the location, in coordinates, of the nest selected. If logged, the user can stablish, by hand or using the gps location of the phone, the new coordinates of the nest.
+    \item \textbf{Change NEST}: A simple button for coming back to the previous menu for select the nest.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/nest_menu.jpeg}
+    \caption{Main nest telegram menu}
+    \label{fig:main_nest_menu}
+\end{figure}
