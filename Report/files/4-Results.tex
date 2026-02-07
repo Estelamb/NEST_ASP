@@ -32,6 +32,17 @@ A \textbf{Local Test} was performed to verify the integrity of the data acquisit
     \label{fig:local_feedback_test}
 \end{figure}
 
+\subsection{Hardware Errors}
+
+The \textbf{Hardware Errors} test was designed to evaluate the system's robustness in handling hardware malfunctions. The system successfully detected and reported errors, such as sensor disconnections or power issues, ensuring that the user is promptly informed of any hardware-related problems.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/errors.png}
+    \caption{Hardware Errors Test}
+    \label{fig:hardware_errors_test}
+\end{figure}
+
 \subsection{ThingsBoard Test}
 
 The \textbf{ThingsBoard Test} focused on validating the connection between the \gls{NEST} Devices and the \gls{IoT} platform. As shown in \autoref{fig:tb_test}, the testing phase successfully verified the integrity of the secure \gls{MQTT} stack and the real-time synchronization of the digital twin. 
@@ -49,14 +60,32 @@ The \textbf{Attributes Changes} test validated the system's responsiveness to re
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/attributes_change.png}
+    \includegraphics[width=0.5\textwidth]{images/attributes_change.png}
     \caption{Attributes Changes}
     \label{fig:attribute_change}
 \end{figure}
 
+\subsection{Alarms Activation}
+
+The \textbf{Alarms Activation} test was designed to evaluate the system's ability to detect and report anomalies. The system successfully triggered alarms on the ThingsBoard platform, confirming its robustness in handling unexpected scenarios.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/alarms.png}
+    \caption{Alarms Activation}
+    \label{fig:alarms}
+\end{figure}
+
 \subsection{Telegram Bot}
 
+The \textbf{Telegram Bot} test validated the functionality of the user interface for remote monitoring and control. As shown in \autoref{fig:telegram_bot_test}, the bot successfully responded to user commands, providing real-time updates on the system's status and allowing for remote configuration changes.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/telegram_bot.jpeg}
+    \caption{Telegram Bot Test}
+    \label{fig:telegram_bot_test}
+\end{figure}
 
 \subsection{System Integration Test}
 

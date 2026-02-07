@@ -81,7 +81,7 @@ Once the telemetry reaches the \textbf{ThingsBoard} platform, the workflow trans
 \begin{itemize}
     \item \textbf{Identity Validation}: The system distinguishes between a hen (triggering monitoring mode) and a staff member (triggering collection mode).
     \item \textbf{Autonomous Actuation}: If the sensors detect a weight increase consistent with an egg but the \gls{UID} indicates the hen has left, the platform pushes a \textbf{Shared Attribute} update.
-    \item \textbf{Remote Sync}: This attribute update is received by the ESP32's \texttt{mqttCallback}, which immediately triggers the servos to close the nest door, protecting the production until a person identifies themselves to collect it.
+    \item \textbf{Remote Sync}: This attribute update is received by the ESP32's \texttt{mqttCallback}, which immediately triggers the servos to close the \gls{NEST} door, protecting the production until a person identifies themselves to collect it.
 \end{itemize}
 
 \begin{figure}[H]
@@ -90,12 +90,19 @@ Once the telemetry reaches the \textbf{ThingsBoard} platform, the workflow trans
     \caption{\acrshort{NEST} Device Workflow Sequence Diagram}
     \label{fig:nest_workflow}
 \end{figure}
-\todo{secuence}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{images/rule_workflow.png}
-    \caption{ThingsBoard Workflow Sequence Diagram}
+    \includegraphics[width=1\textwidth]{images/rule_workflow_1.png}
+    \caption{ThingsBoard Workflow Sequence Diagram (1)}
     \label{fig:tb_workflow}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{images/rule_workflow_2.png}
+    \caption{ThingsBoard Workflow Sequence Diagram (2)}
+    \label{fig:tb_workflow_2}
 \end{figure}
 
 \begin{figure}[H]

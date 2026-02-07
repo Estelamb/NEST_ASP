@@ -1,13 +1,15 @@
 \section{Conclusions and Future Works}
 
 \subsection{Conclusions}
-The NEST project has successfully demonstrated the implementation of a comprehensive IoT ecosystem for the automated management of hen farms. By adopting a hybrid deployment strategy, the system effectively bridges the gap between the physical and virtual worlds, allowing real ESP32 nodes to operate in parallel with simulated entities.
-This architecture not only fulfills the project's scalability requirements, but also ensures a unified network capable of handling diverse data streams from various sensing and actuation layers.
+The NEST project has successfully demonstrated the implementation of a comprehensive IoT ecosystem for the automated management of hen farms. By adopting a hybrid deployment strategy, the system effectively bridges the gap between the physical and virtual worlds, allowing real ESP32 nodes to operate in parallel with simulated entities. This architecture not only fulfills the project's scalability requirements, but also ensures a unified network capable of handling diverse data streams from various sensing and actuation layers.
 
-A central achievement of the project is the successful deployment of autonomous Edge decision-making. By utilizing the FreeRTOS kernel on the ESP32 and implementing local operational logic, the system can trigger actuators, like the servomotors for the doors, without constant server connection.
-This decentralized intelligence ensures low latency and local autonomy vital for egg production.
+A central achievement of the project is the successful deployment of autonomous Edge decision-making. By utilizing the FreeRTOS kernel on the ESP32 and implementing local operational logic, the system can trigger actuators, like the servomotors for the doors, without constant server connection. This decentralized intelligence ensures low latency and local autonomy vital for egg production.
 
-Furthermore, the integration with ThingsBoard provides provides a robust infrastructure for data ingestion and remote commanding. Through the use of MQTT protocols and Shared Attributes, the system maintains a digital twin of each device, allowing for both historical trend analysis and real-time visualization via dashboards. This project has effectively transformed raw telemetry data into actionable insights.
+Furthermore, the integration with ThingsBoard provides a robust infrastructure for data ingestion and remote commanding. Through the use of \gls{MQTT} protocols and Shared Attributes, the system maintains a digital twin of each device, allowing for both historical trend analysis and real-time visualization via dashboards. 
+
+The project underscores the importance of a multi-channel interaction layer, where the interactive dashboard and the Telegram bot work together. By leveraging \gls{REST} \glspl{API} for real-time notifications and Shared Attributes for remote commanding, the system ensures that critical production events, such as egg detection or environmental anomalies, are managed with high availability. 
+
+The Test Bench successfully validated this end-to-end data pipeline, proving that the hybrid approach is a viable and robust framework for modernizing smart farming operations. This project has effectively transformed raw telemetry data into actionable insights.
 
 \subsection{Future Work}
 Despite the successful implementation of the \gls{NEST} ecosystem, the system remains a scalable framework designed for continuous evolution and technical refinement. The following points outline the roadmap for integrating more sophisticated local logic, enhanced user interfaces, and advanced data processing techniques to further optimize poultry farm management.
@@ -15,11 +17,16 @@ Despite the successful implementation of the \gls{NEST} ecosystem, the system re
 \begin{itemize}
     \item \textbf{Predictive Analytics}: Leverage the historical data stored in the ThingsBoard Telemetry Database to implement machine learning models at the Edge for predicting egg-laying patterns and identifying early signs of hen illness based on environmental anomalies.
     
-    \item \textbf{Power Optimization}: Explore deep-sleep modes for the ESP32 between periodic sensing cycles to enhance energy efficiency, which is critical for future deployments using battery or solar power in remote farm areas.
+    \item \textbf{Edge \gls{AI} Integration}: Implement lightweight machine learning inference directly on the Edge to enable real-time anomaly detection and decision-making without relying on cloud connectivity, further enhancing the system's autonomy and responsiveness.
 
     \item \textbf{Telegram updates}: Better control of the users and actions that are able to be done with the bot, such us create UIDs for animals and users, controlling the door or implementing more types of birds.
 
+    \item \textbf{Enhanced Dashboard}: Develop more sophisticated visualizations and alerting mechanisms on the ThingsBoard dashboard, including real-time heatmaps of environmental conditions and predictive maintenance alerts based on sensor data trends.
+    
+    \item \textbf{Power Optimization}: Explore deep-sleep modes for the ESP32 between periodic sensing cycles to enhance energy efficiency, which is critical for future deployments using battery or solar power in remote farm areas.
+    
+    \item \textbf{Sustainability and Energy Harvesting}: Research the integration of solar photovoltaic panels to create a maintenance-free energy cycle for the \gls{NEST} device, reducing the reliance on external power bridges.
+    
+    \item \textbf{Multi-Protocol Redundancy}: Implement a fallback communication strategy using \gls{LoRaWAN} to ensure that critical alarms and autonomous edge decisions are transmitted even during Wi-Fi outages, which are common in rural farming environments.
 \end{itemize}
 
-
-\todo{add more}
