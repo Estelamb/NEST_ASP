@@ -19,7 +19,7 @@
 const char* ssid = "A56 de Estela";
 const char* password = "4hk2fbthruumfqf";
 const char* mqtt_server = "srv-iot.diatel.upm.es";
-const char* token = "hNxbPHZG1Rft0LHAVO";
+const char* token = "hNxbPHZG1A1Rft0LHAVO";
 
 /** @brief Interval between periodic telemetry updates in milliseconds. */
 int telemetryInterval = 10000;
@@ -153,6 +153,8 @@ void operateDoor(String command) {
  * @param length Length of the payload.
  */
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  Serial.println("[MQTT] - Message arrived");
+
   StaticJsonDocument<500> doc;
   if (deserializeJson(doc, payload, length)) return;
   JsonObject shared = doc.containsKey("shared") ? doc["shared"] : doc.as<JsonObject>();
@@ -167,7 +169,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
  */
 void reconnectMQTT() {
   while (!client.connected()) {
+    Serial.println("[MQTT] - Connecting...");
+
     if (client.connect(token, token, NULL)) {
+      Serial.println("[MQTT] - Connected");
       client.subscribe("v1/devices/me/attributes");
       client.publish("v1/devices/me/attributes/request/1", "{}");
     } else {
@@ -188,7 +193,7 @@ void taskTelemetry(void * pvParameters) {
 
     // 1. WiFi Connection Check
     if (WiFi.status() != WL_CONNECTED) {
-      accumulatedErrors += "WiFi Link Down; ";
+      accumulatedErrors += "WiFi Link Down, ";
     }
 
     if (xSemaphoreTake(spiMutex, portMAX_DELAY)) {
@@ -199,7 +204,7 @@ void taskTelemetry(void * pvParameters) {
     if (xSemaphoreTake(mqttMutex, portMAX_DELAY)) {
       // 2. MQTT Connection Check
       if (!client.connected()) {
-        accumulatedErrors += "MQTT Broker Unreachable; ";
+        accumulatedErrors += "MQTT Broker Unreachable, ";
         reconnectMQTT(); 
       }
       client.loop(); 
@@ -208,13 +213,13 @@ void taskTelemetry(void * pvParameters) {
       float h = dht.readHumidity();
       float t = dht.readTemperature();
       if (isnan(h) || isnan(t)) {
-        accumulatedErrors += "DHT22 Failure; ";
+        accumulatedErrors += "DHT22 Failure, ";
       }
 
       // 4. HX711 Load Cell Check
       float w = 0;
       if (!scale.wait_ready_timeout(150)) {
-        accumulatedErrors += "HX711 (Scale) Not Found; ";
+        accumulatedErrors += "HX711 (Scale) Not Found, ";
       } else {
         w = scale.get_units(5);
       }
@@ -232,6 +237,10 @@ void taskTelemetry(void * pvParameters) {
 
       char buffer[512];
       serializeJson(data, buffer);
+
+      Serial.print("[TELEMETRY] - Periodic publish: ");
+      Serial.println(buffer);
+      
       client.publish("v1/devices/me/telemetry", buffer);
       xSemaphoreGive(mqttMutex);
     }
@@ -247,37 +256,34 @@ void taskTelemetry(void * pvParameters) {
  */
 void taskRFID(void * pvParameters) {
   String previousDetected = "";
+
   for(;;) {
     String currentDetected = "";
-    String rfidError = "";
-
+    
     if (xSemaphoreTake(spiMutex, portMAX_DELAY)) {
-      // Check if RFID reader is responsive
-      if (mfrc522.PCD_PerformSelfTest()) { 
-         currentDetected = checkRFID();
-      } else {
-         rfidError = "MFRC522 Reader Hardware Error";
-      }
+      currentDetected = checkRFID();
       xSemaphoreGive(spiMutex);
     }
 
-    // Report immediate detection or error
-    if ((currentDetected != "" && currentDetected != previousDetected) || rfidError != "") {
+    // ONLY publish if a card is detected AND it's a new event
+    if (currentDetected != "" && currentDetected != previousDetected) {
+      
       if (xSemaphoreTake(mqttMutex, portMAX_DELAY)) {
         if (client.connected()) {
-          StaticJsonDocument<200> rfidDoc;
-          if (currentDetected != "") rfidDoc["uid"] = currentDetected;
-          if (rfidError != "") rfidDoc["error"] = rfidError;
-          
-          char rfidBuffer[200];
+          StaticJsonDocument<100> rfidDoc;
+          rfidDoc["uid"] = currentDetected;
+          char rfidBuffer[100];
           serializeJson(rfidDoc, rfidBuffer);
+          Serial.print("[RFID] - Instant Publish: ");
+          Serial.println(currentDetected);
           client.publish("v1/devices/me/telemetry", rfidBuffer);
         }
         xSemaphoreGive(mqttMutex);
       }
     }
+    
     previousDetected = currentDetected;
-    vTaskDelay(250 / portTICK_PERIOD_MS);
+    vTaskDelay(250 / portTICK_PERIOD_MS); // Yield CPU
   }
 }
 
