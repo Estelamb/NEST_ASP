@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST Device Firmware &mdash; NEST - Architectures and Service Platforms 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Testing and Validation" href="tests.html" />
+    <link rel="prev" title="NEST Device" href="../device.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEST - Architectures and Service Platforms
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../device.html">NEST Device</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NEST Device Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-features">Main Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#firmware-architecture">Firmware Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#task-management">Task Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resource-synchronization">Resource Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-reference">Technical Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv49checkRFIDv"><code class="docutils literal notranslate"><span class="pre">checkRFID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv411setLedColor6String"><code class="docutils literal notranslate"><span class="pre">setLedColor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv411operateDoor6String"><code class="docutils literal notranslate"><span class="pre">operateDoor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv412mqttCallbackPcP4bytej"><code class="docutils literal notranslate"><span class="pre">mqttCallback()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">Testing and Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html">NEST Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thingsboard.html">ThingsBoard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telegram.html">Telegram</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEST - Architectures and Service Platforms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../device.html">NEST Device</a></li>
+      <li class="breadcrumb-item active">NEST Device Firmware</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/NEST_Device/main.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nest-device-firmware">
+<h1>NEST Device Firmware<a class="headerlink" href="#nest-device-firmware" title="Link to this heading"></a></h1>
+<p>The <strong>NEST (Next-generation Edge System for Tracking)</strong> firmware is an ESP32-based IoT application designed for smart poultry farming. It integrates environmental monitoring, access control, and weight measurement using a multitasking approach powered by <strong>FreeRTOS</strong>.</p>
+<section id="main-features">
+<h2>Main Features<a class="headerlink" href="#main-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Real-time Environmental Monitoring</strong>: Periodic reading of temperature and humidity via DHT22.</p></li>
+<li><p><strong>Access Control</strong>: High-frequency RFID scanning (MFRC522) for hen and farmer identification.</p></li>
+<li><p><strong>Weight Measurement</strong>: High-precision egg detection using a load cell and HX711 amplifier.</p></li>
+<li><p><strong>Remote Commanding</strong>: Bidirectional communication with ThingsBoard for actuator control (Servos and RGB LED).</p></li>
+<li><p><strong>Fault Tolerance</strong>: Concurrent error tracking for sensors and network connectivity.</p></li>
+</ul>
+</section>
+<section id="firmware-architecture">
+<h2>Firmware Architecture<a class="headerlink" href="#firmware-architecture" title="Link to this heading"></a></h2>
+<p>The firmware utilizes <strong>FreeRTOS</strong> to manage two core concurrent tasks, ensuring that high-speed events (like RFID detection) do not interfere with periodic telemetry.</p>
+<section id="task-management">
+<h3>Task Management<a class="headerlink" href="#task-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>taskTelemetry (Periodic)</strong>: Executes every 10 seconds (default). It performs data fusion from all sensors and publishes a comprehensive JSON payload to the MQTT broker.</p></li>
+<li><p><strong>taskRFID (Async)</strong>: Executes every 250ms. It provides “Instant Publish” capabilities, sending a telemetry update immediately upon detecting a new card to minimize latency for door operations.</p></li>
+</ul>
+</section>
+<section id="resource-synchronization">
+<h3>Resource Synchronization<a class="headerlink" href="#resource-synchronization" title="Link to this heading"></a></h3>
+<p>To prevent race conditions and hardware conflicts, the system implements the following <strong>Mutexes</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mqttMutex</span></code>: Synchronizes access to the Shared MQTT client and WiFi radio.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spiMutex</span></code>: Manages the SPI bus contention between the MFRC522 RFID reader and other peripherals.</p></li>
+</ul>
+</section>
+</section>
+<section id="technical-reference">
+<h2>Technical Reference<a class="headerlink" href="#technical-reference" title="Link to this heading"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49checkRFIDv">
+<span id="_CPPv39checkRFIDv"></span><span id="_CPPv29checkRFIDv"></span><span id="checkRFID"></span><span class="n"><span class="pre">String</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkRFID</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49checkRFIDv" title="Link to this definition"></a><br /></dt>
+<dd><p>Scans for the presence of an RFID tag. It includes a forced Wakeup sequence to ensure tags are detected even if held continuously in front of the reader.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The UID of the detected card in Hex format, or an empty string if none.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411setLedColor6String">
+<span id="_CPPv311setLedColor6String"></span><span id="_CPPv211setLedColor6String"></span><span id="setLedColor__String"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLedColor</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">String</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">color</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411setLedColor6String" title="Link to this definition"></a><br /></dt>
+<dd><p>Updates the color of the Common Anode RGB LED.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>color</strong> – The target color name (off, red, green, blue, on).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411operateDoor6String">
+<span id="_CPPv311operateDoor6String"></span><span id="_CPPv211operateDoor6String"></span><span id="operateDoor__String"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">operateDoor</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">String</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">command</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411operateDoor6String" title="Link to this definition"></a><br /></dt>
+<dd><p>Drives two SG90 servomotors to specific angles to simulate a physical door opening or closing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> – “open” to trigger the entry position, otherwise “closed”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412mqttCallbackPcP4bytej">
+<span id="_CPPv312mqttCallbackPcP4bytej"></span><span id="_CPPv212mqttCallbackPcP4bytej"></span><span id="mqttCallback__cP.byteP.unsigned-i"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mqttCallback</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">topic</span></span>, <span class="n"><span class="pre">byte</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">payload</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412mqttCallbackPcP4bytej" title="Link to this definition"></a><br /></dt>
+<dd><p>Processes incoming JSON messages from ThingsBoard. It extracts <strong>Shared Attributes</strong> to remotely update the door state, LED feedback, or the telemetry reporting frequency.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../device.html" class="btn btn-neutral float-left" title="NEST Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.html" class="btn btn-neutral float-right" title="Testing and Validation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Alejandro Botas Bárcena, Javier Grimaldos Chavarría, Estela Mora Barba.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
