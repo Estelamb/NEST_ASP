@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST API Client &mdash; NEST - Architectures and Service Platforms 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="System Configuration" href="config_telegram.html" />
+    <link rel="prev" title="NEST Telegram Controller" href="bot_telegram.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEST - Architectures and Service Platforms
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../device.html">NEST Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html">NEST Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thingsboard.html">ThingsBoard</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../telegram.html">Telegram</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bot_telegram.html">NEST Telegram Controller</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NEST API Client</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operational-logic">Operational Logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verification-protocol">Verification Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api_client">Code Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#api_client.APIClient"><code class="docutils literal notranslate"><span class="pre">APIClient</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="config_telegram.html">System Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEST - Architectures and Service Platforms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../telegram.html">Telegram</a></li>
+      <li class="breadcrumb-item active">NEST API Client</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Telegram/api_telegram.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nest-api-client">
+<h1>NEST API Client<a class="headerlink" href="#nest-api-client" title="Link to this heading"></a></h1>
+<p>This module provides a robust interface for communicating with the IoT Platform backend. It handles all HTTP infrastructure, including authentication persistence, telemetry polling, and bidirectional attribute synchronization.</p>
+<section id="operational-logic">
+<h2>Operational Logic<a class="headerlink" href="#operational-logic" title="Link to this heading"></a></h2>
+<p>The client acts as a high-level wrapper around the <code class="docutils literal notranslate"><span class="pre">requests</span></code> library, implementing specific patterns for IoT device management:</p>
+<ul class="simple">
+<li><p><strong>Session Management</strong>: Uses a centralized <code class="docutils literal notranslate"><span class="pre">requests.Session</span></code> to maintain persistent headers (JWT Token) and optimize connection pooling across multiple API calls.</p></li>
+<li><p><strong>Two-Phase Attribute Updates</strong>: Implements a “command-and-verify” pattern. When an attribute (like door status or temperature thresholds) is changed, the client performs up to three verification retries to ensure the physical device or the twin has successfully registered the new state.</p></li>
+<li><dl class="simple">
+<dt><strong>Corpus-Specific Logic</strong>:</dt><dd><ul>
+<li><p><strong>Telemetry</strong>: Fetches time-series data using specific keys (humidity, temperature, weight).</p></li>
+<li><p><strong>Attributes</strong>: Manages both <em>Client Attributes</em> (thresholds, GPS) and <em>Shared Attributes</em> (door, RGB status).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="verification-protocol">
+<h2>Verification Protocol<a class="headerlink" href="#verification-protocol" title="Link to this heading"></a></h2>
+<p>To ensure system reliability, the <code class="docutils literal notranslate"><span class="pre">_verify_attribute_change</span></code> method is invoked after any write operation. It handles:</p>
+<ol class="arabic simple">
+<li><p><strong>Numeric Tolerance</strong>: Compares floating-point values (like Temperature) with a small epsilon (0.001) to account for precision differences.</p></li>
+<li><p><strong>Retry Backoff</strong>: Introduces a short delay between attempts to allow the backend and the device to synchronize.</p></li>
+<li><p><strong>Result Integrity</strong>: Returns a boolean status and a descriptive message, allowing the Telegram interface to report precise errors to the user.</p></li>
+</ol>
+</section>
+<section id="module-api_client">
+<span id="code-documentation"></span><h2>Code Documentation<a class="headerlink" href="#module-api_client" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="api_client.APIClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api_client.</span></span><span class="sig-name descname"><span class="pre">APIClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/api_client.html#APIClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Client to interact with the IoT Platform API.</p>
+<p>Handles authentication, telemetry retrieval, and device attribute management
+(door, temperature, humidity, and location).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>base_url</strong> (<em>str</em>) – The root URL of the IoT API.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/api_client.html#APIClient.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the API client with a base URL and default headers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.login">
+<span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.login" title="Link to this definition"></a></dt>
+<dd><p>Authenticates the user and saves the JWT token for subsequent requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The API username.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – The API password.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JWT token if successful, None otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_telemetry">
+<span class="sig-name descname"><span class="pre">get_telemetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_telemetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_telemetry" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the latest timeseries telemetry data for a specific device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_id</strong> (<em>str</em>) – The unique identifier of the device.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing telemetry keys and values, or None if the request fails.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_door_status">
+<span class="sig-name descname"><span class="pre">get_door_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_door_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_door_status" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the ‘door’ attribute from the shared attributes of a device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> (<em>str</em>) – The access token for the specific device.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with shared attributes, or None if the request fails.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.set_door_status">
+<span class="sig-name descname"><span class="pre">set_door_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.set_door_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.set_door_status" title="Link to this definition"></a></dt>
+<dd><p>Updates the door status and performs a verification loop to confirm the change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_access_token</strong> (<em>str</em>) – The access token for the specific device.</p></li>
+<li><p><strong>status</strong> (<em>str</em>) – The target status (‘open’ or ‘closed’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing (success_status, feedback_message).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_temperature_attributes">
+<span class="sig-name descname"><span class="pre">get_temperature_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_temperature_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_temperature_attributes" title="Link to this definition"></a></dt>
+<dd><p>Fetches the client-side temperature thresholds (maxTemp, minTemp).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> (<em>str</em>) – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict containing maxTemp and minTemp.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.set_temperature_attribute">
+<span class="sig-name descname"><span class="pre">set_temperature_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.set_temperature_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.set_temperature_attribute" title="Link to this definition"></a></dt>
+<dd><p>Sets a temperature threshold and verifies the update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_access_token</strong> (<em>str</em>) – Device access token.</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – The attribute name (‘maxTemp’ or ‘minTemp’).</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – The temperature value to set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (success, message).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_humidity_attributes">
+<span class="sig-name descname"><span class="pre">get_humidity_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_humidity_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_humidity_attributes" title="Link to this definition"></a></dt>
+<dd><p>Fetches the client-side humidity thresholds (maxHum, minHum).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict containing maxHum and minHum.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.set_humidity_attribute">
+<span class="sig-name descname"><span class="pre">set_humidity_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.set_humidity_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.set_humidity_attribute" title="Link to this definition"></a></dt>
+<dd><p>Sets a humidity threshold and verifies the update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_access_token</strong> – Device access token.</p></li>
+<li><p><strong>attribute</strong> – The attribute name (‘maxHum’ or ‘minHum’).</p></li>
+<li><p><strong>value</strong> – The percentage value to set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (success, message).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_location_attributes">
+<span class="sig-name descname"><span class="pre">get_location_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_location_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_location_attributes" title="Link to this definition"></a></dt>
+<dd><p>Retrieves current GPS coordinates (latitude, longitude) from the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict containing latitude and longitude.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.set_location_attributes">
+<span class="sig-name descname"><span class="pre">set_location_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.set_location_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.set_location_attributes" title="Link to this definition"></a></dt>
+<dd><p>Updates the device location coordinates and verifies the change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_access_token</strong> – Device access token.</p></li>
+<li><p><strong>latitude</strong> – Latitude float.</p></li>
+<li><p><strong>longitude</strong> – Longitude float.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (success, message).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_eggs_attribute">
+<span class="sig-name descname"><span class="pre">get_eggs_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_eggs_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_eggs_attribute" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the ‘eggs’ shared attribute count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String value of egg count, or None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_weight_attributes">
+<span class="sig-name descname"><span class="pre">get_weight_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_weight_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_weight_attributes" title="Link to this definition"></a></dt>
+<dd><p>Retrieves weight configuration attributes (avgWeight, minWeight).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict with avgWeight and minWeight.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.set_weight_attributes">
+<span class="sig-name descname"><span class="pre">set_weight_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.set_weight_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.set_weight_attributes" title="Link to this definition"></a></dt>
+<dd><p>Updates the weight reference for egg type detection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_access_token</strong> – Device access token.</p></li>
+<li><p><strong>avg_weight</strong> – Average weight in grams.</p></li>
+<li><p><strong>min_weight</strong> – Minimum weight in grams.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (success, message).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_egg_type">
+<span class="sig-name descname"><span class="pre">get_egg_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_egg_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_egg_type" title="Link to this definition"></a></dt>
+<dd><p>Infers the egg type (Hen, Quail) based on the configured average weight.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘Hen’, ‘Quail’, or ‘Unknown’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.get_rgb_attribute">
+<span class="sig-name descname"><span class="pre">get_rgb_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.get_rgb_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.get_rgb_attribute" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the shared ‘rgb’ status from the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device_access_token</strong> – Device access token.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>RGB color name/value as string, or None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.is_logged_in">
+<span class="sig-name descname"><span class="pre">is_logged_in</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/api_client.html#APIClient.is_logged_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.is_logged_in" title="Link to this definition"></a></dt>
+<dd><p>Checks if the client has an active authentication token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a token exists, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api_client.APIClient.logout">
+<span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/api_client.html#APIClient.logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api_client.APIClient.logout" title="Link to this definition"></a></dt>
+<dd><p>Invalidates the local token and clears the authorization headers.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bot_telegram.html" class="btn btn-neutral float-left" title="NEST Telegram Controller" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config_telegram.html" class="btn btn-neutral float-right" title="System Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Alejandro Botas Bárcena, Javier Grimaldos Chavarría, Estela Mora Barba.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

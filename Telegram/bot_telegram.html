@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST Telegram Controller &mdash; NEST - Architectures and Service Platforms 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NEST API Client" href="api_telegram.html" />
+    <link rel="prev" title="Telegram" href="../telegram.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEST - Architectures and Service Platforms
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../device.html">NEST Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html">NEST Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thingsboard.html">ThingsBoard</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../telegram.html">Telegram</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NEST Telegram Controller</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operational-logic">Operational Logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-hierarchy">Command Hierarchy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-documentation">Code Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_telegram.html">NEST API Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_telegram.html">System Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEST - Architectures and Service Platforms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../telegram.html">Telegram</a></li>
+      <li class="breadcrumb-item active">NEST Telegram Controller</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Telegram/bot_telegram.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nest-telegram-controller">
+<h1>NEST Telegram Controller<a class="headerlink" href="#nest-telegram-controller" title="Link to this heading"></a></h1>
+<p>This module implements a high-level Telegram interface for the NEST IoT system. It acts as a bridge between the end-user and the physical or simulated NEST nodes, providing real-time telemetry, door control, and environmental configuration.</p>
+<section id="operational-logic">
+<h2>Operational Logic<a class="headerlink" href="#operational-logic" title="Link to this heading"></a></h2>
+<p>The bot operates using an <strong>asynchronous event-driven architecture</strong> managed by the <cite>python-telegram-bot</cite> library. It maintains a stateful session for each user via <cite>user_data</cite> to ensure commands are executed against the correct device.</p>
+<ul class="simple">
+<li><p><strong>Authentication Flow</strong>: Users must authenticate via the <code class="docutils literal notranslate"><span class="pre">/login</span></code> command. The module uses a decorator-based system to restrict access to protected API endpoints.</p></li>
+<li><p><strong>Contextual Nest Selection</strong>: Before interacting with sensors or actuators, a user must select a “Current NEST” from the available registry. This context is persisted across the session.</p></li>
+<li><p><strong>Menu Navigation</strong>: The system uses a nested <strong>Inline Keyboard</strong> structure, allowing users to navigate from a global list of nests to specific device sub-menus (Telemetry, Door, Eggs, etc.).</p></li>
+<li><dl class="simple">
+<dt><strong>Validation Decorators</strong>:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;require_login</span></code>: Ensures an active API token exists before sending PUT/POST requests.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;require_nest_selected</span></code>: Ensures a Target Device ID is present in the context.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="command-hierarchy">
+<h2>Command Hierarchy<a class="headerlink" href="#command-hierarchy" title="Link to this heading"></a></h2>
+<p>The bot implements several command categories to manage the IoT ecosystem:</p>
+<ol class="arabic simple">
+<li><p><strong>System Commands</strong>: <code class="docutils literal notranslate"><span class="pre">/start</span></code>, <code class="docutils literal notranslate"><span class="pre">/help</span></code>, and <code class="docutils literal notranslate"><span class="pre">/status</span></code> for connectivity health checks.</p></li>
+<li><p><strong>Actuator Control</strong>:
+* <strong>Door</strong>: Toggle states between <cite>open</cite> and <cite>closed</cite>.
+* <strong>RGB</strong>: Visual status feedback control.</p></li>
+<li><p><strong>Environmental Tuning</strong>:
+* Set min/max thresholds for <strong>Temperature</strong> and <strong>Humidity</strong> to trigger automated alerts on the physical hardware.</p></li>
+<li><p><strong>Production Logging</strong>:
+* Update <strong>Egg Types</strong> (Hen vs. Quail) to adjust weight calculation logic for production metrics.</p></li>
+</ol>
+</section>
+<section id="code-documentation">
+<h2>Code Documentation<a class="headerlink" href="#code-documentation" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../telegram.html" class="btn btn-neutral float-left" title="Telegram" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_telegram.html" class="btn btn-neutral float-right" title="NEST API Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Alejandro Botas Bárcena, Javier Grimaldos Chavarría, Estela Mora Barba.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

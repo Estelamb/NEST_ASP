@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST Simulation &mdash; NEST - Architectures and Service Platforms 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Automated Deployment Workflow" href="run_all.html" />
+    <link rel="prev" title="NEST Simulation" href="../simulation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEST - Architectures and Service Platforms
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../device.html">NEST Device</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../simulation.html">NEST Simulation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NEST Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operational-logic">Operational Logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nest_sim">Code Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nest_sim.SmartNest"><code class="docutils literal notranslate"><span class="pre">SmartNest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nest_sim.on_message"><code class="docutils literal notranslate"><span class="pre">on_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nest_sim.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run_all.html">Automated Deployment Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../thingsboard.html">ThingsBoard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telegram.html">Telegram</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEST - Architectures and Service Platforms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../simulation.html">NEST Simulation</a></li>
+      <li class="breadcrumb-item active">NEST Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/NEST_Simulation/nest_sim.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nest-simulation">
+<h1>NEST Simulation<a class="headerlink" href="#nest-simulation" title="Link to this heading"></a></h1>
+<p>This module provides a Python-based simulation environment that replicates the behavior of multiple NEST nodes. It allows for scalability testing and validation of the system’s logic in parallel with physical hardware.</p>
+<section id="operational-logic">
+<h2>Operational Logic<a class="headerlink" href="#operational-logic" title="Link to this heading"></a></h2>
+<p>The simulation runs a <strong>Finite State Machine (FSM)</strong> that mimics the life cycle of a poultry nest. The system transitions through states based on random persistence and environmental conditions.</p>
+<ul class="simple">
+<li><p><strong>WAITING_FOR_HEN</strong>: Idle state with no weight or UID detected.</p></li>
+<li><p><strong>HEN_INSIDE</strong>: Simulates hen entry with random weight (2000g-3500g) and a specific UID.</p></li>
+<li><p><strong>EGGS_DEPOSITED</strong>: Represents the hen leaving while the weight of the eggs remains.</p></li>
+<li><p><strong>PERSON_COLLECTING</strong>: Authorized user (Farmer) collecting production, identified by a unique UID.</p></li>
+</ul>
+</section>
+<section id="module-nest_sim">
+<span id="code-documentation"></span><h2>Code Documentation<a class="headerlink" href="#module-nest_sim" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="nest_sim.SmartNest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nest_sim.</span></span><span class="sig-name descname"><span class="pre">SmartNest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nest_sim.html#SmartNest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nest_sim.SmartNest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class representing a Smart Nest node (NEST).</p>
+<p>Manages internal state, weight simulation logic, and user identification
+through a Finite State Machine (FSM).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nest_sim.SmartNest.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nest_sim.html#SmartNest.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nest_sim.SmartNest.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the nest with credentials and default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> – ThingsBoard access token for the device.</p></li>
+<li><p><strong>name</strong> – Identifiable name for logs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nest_sim.SmartNest.update_logic">
+<span class="sig-name descname"><span class="pre">update_logic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nest_sim.html#SmartNest.update_logic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nest_sim.SmartNest.update_logic" title="Link to this definition"></a></dt>
+<dd><p>Updates the cyclic logic. The farmer UID is sent once,
+while the hen UID persists while she is inside.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nest_sim.on_message">
+<span class="sig-prename descclassname"><span class="pre">nest_sim.</span></span><span class="sig-name descname"><span class="pre">on_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nest_sim.html#on_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nest_sim.on_message" title="Link to this definition"></a></dt>
+<dd><p>Callback executed when an MQTT message (Shared Attributes) is received.</p>
+<p>Enables remote control of telemetry frequency, door status, and
+LED color from the ThingsBoard dashboard.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nest_sim.run">
+<span class="sig-prename descclassname"><span class="pre">nest_sim.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nest_sim.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nest_sim.run" title="Link to this definition"></a></dt>
+<dd><p>Main function to start the MQTT client and the simulation loop.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../simulation.html" class="btn btn-neutral float-left" title="NEST Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_all.html" class="btn btn-neutral float-right" title="Automated Deployment Workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Alejandro Botas Bárcena, Javier Grimaldos Chavarría, Estela Mora Barba.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

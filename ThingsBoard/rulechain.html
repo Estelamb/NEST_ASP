@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEST Rule Chain Logic &mdash; NEST - Architectures and Service Platforms 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Telegram" href="../telegram.html" />
+    <link rel="prev" title="NEST Device Profile Configuration" href="profile.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEST - Architectures and Service Platforms
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../device.html">NEST Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html">NEST Simulation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../thingsboard.html">ThingsBoard</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dashboard.html">ThingsBoard Dashboard Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html">NEST Device Profile Configuration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NEST Rule Chain Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-workflow">Core Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#message-classification-and-validation">1. Message Classification and Validation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#digital-twin-and-fsm-management">2. Digital Twin and FSM Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environmental-monitoring-and-alarms">3. Environmental Monitoring and Alarms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-notifications">4. External Notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-nodes">Technical Nodes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../telegram.html">Telegram</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEST - Architectures and Service Platforms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../thingsboard.html">ThingsBoard</a></li>
+      <li class="breadcrumb-item active">NEST Rule Chain Logic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ThingsBoard/rulechain.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nest-rule-chain-logic">
+<h1>NEST Rule Chain Logic<a class="headerlink" href="#nest-rule-chain-logic" title="Link to this heading"></a></h1>
+<p>The <strong>NEST Rule Chain</strong> acts as the central intelligence of the system within ThingsBoard. It processes incoming sensor data, manages a <strong>Finite State Machine (FSM)</strong> for the nest’s life cycle, and automates physical responses and external notifications.</p>
+<section id="core-workflow">
+<h2>Core Workflow<a class="headerlink" href="#core-workflow" title="Link to this heading"></a></h2>
+<section id="message-classification-and-validation">
+<h3>1. Message Classification and Validation<a class="headerlink" href="#message-classification-and-validation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Message Type Switching:</strong> The system first differentiates between <code class="docutils literal notranslate"><span class="pre">Post</span> <span class="pre">telemetry</span></code>, <code class="docutils literal notranslate"><span class="pre">Post</span> <span class="pre">attributes</span></code>, and other message types via the <strong>Check Message Type</strong> node.</p></li>
+<li><p><strong>Telemetry Validation:</strong> The <strong>Check Telemetry Message</strong> node ensures incoming data contains necessary keys such as <code class="docutils literal notranslate"><span class="pre">temperature</span></code>, <code class="docutils literal notranslate"><span class="pre">humidity</span></code>, <code class="docutils literal notranslate"><span class="pre">weight</span></code>, <code class="docutils literal notranslate"><span class="pre">uid</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, or <code class="docutils literal notranslate"><span class="pre">init</span></code>.</p></li>
+<li><p><strong>Hardware Error Handling:</strong> If an <code class="docutils literal notranslate"><span class="pre">error</span></code> key is detected, the <strong>Hardware Error</strong> node creates a <strong>CRITICAL</strong> severity alarm including error details and a timestamp.</p></li>
+</ul>
+</section>
+<section id="digital-twin-and-fsm-management">
+<h3>2. Digital Twin and FSM Management<a class="headerlink" href="#digital-twin-and-fsm-management" title="Link to this heading"></a></h3>
+<p>The system manages the nest’s state autonomously through specialized logic:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Finite State Machine (FSM):</strong> Using the <code class="docutils literal notranslate"><span class="pre">state</span></code> shared attribute, the <strong>Check FSM State</strong> and <strong>Change FSM State</strong> nodes control transitions between:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Waiting</span> <span class="pre">for</span> <span class="pre">Hen</span></code>: Remains until the UID matches the <code class="docutils literal notranslate"><span class="pre">henUID</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hen</span> <span class="pre">Inside</span></code>: Active while the hen is detected.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Eggs</span> <span class="pre">Inside</span></code>: Triggered when the hen leaves and weight is detected; it calculates estimated eggs (<code class="docutils literal notranslate"><span class="pre">weight</span> <span class="pre">/</span> <span class="pre">avgWeight</span></code>) and sets the door to <code class="docutils literal notranslate"><span class="pre">closed</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Recolecting</span> <span class="pre">Eggs</span></code>: Allows access to the farmer (<code class="docutils literal notranslate"><span class="pre">validUID</span></code>) to reset the cycle.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Access Control (UID):</strong> The <strong>Open Door</strong> node validates if the incoming <code class="docutils literal notranslate"><span class="pre">uid</span></code> matches the <code class="docutils literal notranslate"><span class="pre">validUID</span></code>. If it matches, it toggles the <code class="docutils literal notranslate"><span class="pre">door</span></code> attribute and sets the LED <code class="docutils literal notranslate"><span class="pre">rgb</span></code> to <strong>Green</strong>. Unrecognized UIDs trigger the <strong>Reject Door Use</strong> node, setting the LED to <strong>Red</strong>.</p></li>
+</ul>
+</section>
+<section id="environmental-monitoring-and-alarms">
+<h3>3. Environmental Monitoring and Alarms<a class="headerlink" href="#environmental-monitoring-and-alarms" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Dynamic Thresholds:</strong> The <strong>TempRange</strong> and <strong>HumRange</strong> nodes fetch client attributes (<code class="docutils literal notranslate"><span class="pre">maxTemp</span></code>, <code class="docutils literal notranslate"><span class="pre">minTemp</span></code>, etc.) to use as bounds.</p></li>
+<li><dl class="simple">
+<dt><strong>Alarm Life Cycle:</strong></dt><dd><ul>
+<li><p>If temperature or humidity exceeds limits, <strong>Temperature/Humidity Out of Bounds</strong> alarms are created.</p></li>
+<li><p>Alarms are automatically cleared when telemetry returns to the safe range.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Egg Notification:</strong> The <strong>Eggs Inside</strong> filter triggers a specific alarm when the egg count is greater than zero.</p></li>
+</ul>
+</section>
+<section id="external-notifications">
+<h3>4. External Notifications<a class="headerlink" href="#external-notifications" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Telegram Integration:</strong> The rule chain connects to the Telegram API to send updates to chat ID <code class="docutils literal notranslate"><span class="pre">1624527516</span></code>.</p></li>
+<li><p><strong>Real-time Alerts:</strong> Notifications are sent for created/cleared environmental alarms and when eggs are detected or collected.</p></li>
+</ul>
+</section>
+</section>
+<section id="technical-nodes">
+<h2>Technical Nodes<a class="headerlink" href="#technical-nodes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>TBEL Scripting:</strong> Extensively used for FSM transitions, egg estimation logic, and RGB status management.</p></li>
+<li><p><strong>Attribute Enrichment:</strong> The <strong>Get Attributes</strong> nodes (TempRange, HumRange, UIDs, FSM) load configuration parameters into metadata before evaluation.</p></li>
+<li><p><strong>REST API Call:</strong> Executes POST requests to the Telegram Bot.</p></li>
+<li><p><strong>Data Persistence:</strong> Sensor data is saved via <strong>Save Timeseries</strong>, and device states are pushed to <strong>SHARED_SCOPE</strong> to sync with the physical hardware.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="profile.html" class="btn btn-neutral float-left" title="NEST Device Profile Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../telegram.html" class="btn btn-neutral float-right" title="Telegram" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Alejandro Botas Bárcena, Javier Grimaldos Chavarría, Estela Mora Barba.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
